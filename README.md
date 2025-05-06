@@ -29,3 +29,7 @@
   * Reviewing the nextflow reports
   * Reviewing work dir
   * How to use nextflow log
+* Where to go for help
+  * Intro to Seqera AI
+    * Maybe do some basic problems for how to solve issues
+  * Nf-core/Nextflow slack
