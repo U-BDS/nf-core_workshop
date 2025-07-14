@@ -798,3 +798,9 @@ As can be seen in the previous command's output, the process names are very long
 Running this yields a number of results, but we are able to now validate that we do see the `--gcBias --seqBias` being added to all commands.
 
 Lastly, as the various `work` directories contain other "hidden" files (files starting with a `.`), such as logs and trace files, these files can be reviewed to assist with debugging issues.
+
+# Where to go for help
+
+## Seqera AI
+
+## Slack
