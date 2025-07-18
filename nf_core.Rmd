@@ -19,15 +19,15 @@ Sections of the teaching material for this workshop, contains materials which ha
 
 # Introduction to Workflow Automation
 
-Analyzing data, regardless of field, involves executing a sequence of computational steps in order to clean and process the data into a form that's easier to understand. This sequence of steps is called a **workflow** or **workflow**. Traditionally, workflows have chained together each step using languages like Bash or Perl, however as workflows have grown more complex, the need for more sophisticated features to help manage and execute each step in a workflow has increased.
+Analyzing data, regardless of the domain, involves executing a sequence of computational steps in order to clean and process the data into a format that's easier to interpret. This sequence of steps is called a **workflow**. Traditionally, steps withing a workflow have been chained together using languages like Bash or Perl, however as workflows have grown more complex, the need for more sophisticated features to help manage and execute each step in a workflow has increased.
 
 ## Workflow Management Systems
 
 **Workflow Management Systems (WfMS)**, such as Snakemake, Nextflow, and WDL, were developed to help handle the growing complex needs of computational workflows. These systems come with multiple features to simplify execution of a workflow:
 
--   **Environment Management & Portability**: WfMS possess native support for containerization tools, such as *Singularity* and *Docker,* allowing users to define environments for the entire workflow or for individual tools, helping ensure reproducible results.
+-   **Environment Management & Portability**: WfMS possess native support for containerization tools, such as *Singularity* and *Docker*, allowing users to define environments for the entire workflow or for individual tools, helping ensure reproducible results across various compute systems.
 
--   **Re-entrancy:** WfMS allow users to restart workflows at points other than the first step. This ensures that if the workflow fails, restarting the workflow will begin at the step that failed rather than restarting from the beginning. This is normally done internally by keeping track of what files each step uses as input and files should be produced as output, and evaluating that against what files have been generated.
+-   **Re-entrancy:** WfMS allow users to restart workflows at points other than the first step. This ensures that if the workflow fails, restarting the workflow will begin at the step that failed rather than restarting from the beginning. This is normally internally done by the WfMS by keeping track of what files each step uses as input and which files should be produced as output, and evaluating that against what files have been generated.
 
 -   **Monitoring & Management**: WfMS allow users to monitor workflows as they are processing, providing users information about steps as they execute. Additionally, WfMS typically provide logs of the behavior as the workflow executes, allowing users to review in-depth information from each step of the workflow.
 
@@ -42,8 +42,13 @@ A container is a packaged up snapshot of code (or software) and all of its depen
 It is highly recommended that any code or analysis that is meant to be shared should be encapsulated in a container as that will help in increasing the reproducibility of your work.
 
 ## Nextflow
+<br>
+<center>
+![<nextflow>](imgs/nextflow-logo-bg-light.png){width="50%"}
+</center>
+<br>
 
-While there are many WfMS, the topic of this lesson is Nextflow. Nextflow is a workflow management system that is written using the dataflow programming model. Dataflow Programming means that each step in your workflow definition, waits until it receives input from an upstream step, does work, and then sends outputs to a downstream step. Programming in this way helps ensure that Nextflow is able to run steps in parallel and have data at various states in the workflow until it completes.
+While there are many WfMS, the topic of this lesson is **Nextflow**. Nextflow is a workflow management system that is written using the dataflow programming model. Dataflow Programming means that each step in your workflow definition, waits until it receives input from an upstream step, does work, and then sends outputs to a downstream step. Programming in this way helps ensure that Nextflow is able to run steps in parallel and have data at various states in the workflow until it completes.
 
 While this lesson does not cover developing Nextflow workflows, there are some aspects and definitions that are important to know:
 
@@ -57,9 +62,16 @@ While this lesson does not cover developing Nextflow workflows, there are some a
 
     3.  **Processes** describe the step to be executed, often in script form. Process scripts can be written in any language that can be executed by the Linux platform (Bash, Perl, Python, R, Java, etc.). Processes define the expected inputs and outputs for a step, and spawn a process task for each complete input set. Importantly, each process task is fully independent and isolated, meaning it cannot interact with its sibling tasks.
 
-## nf-core
+Importantly, Nextflow is supported across all major platforms, including but not limited to cloud computing (e.g.: AWS) and High Performance Computing (HPC) such as UAB's HPC system (Cheaha).
 
-nf-core is a community-led effort to curate and develop a set of analysis workflows using Nextflow. All workflows published as part of nf-core are open source and there are a wide range of workflows published currently supporting analyses such as single-cell or ATAC-seq. The community itself is not specifically limited to bioinformatics, but most workflows published so far have all been within that field. One point to be noted, is that the nf-core team has published a lot of standards and tools to create a styling guidelines, and that any Nextflow workflow is able to use these standards and tools even if they do not wish to publish as part of nf-core. To view a list of all workflows (released and in development), please visit <https://nf-co.re/workflows>.
+## nf-core
+<br>
+<center>
+![<nf-core>](imgs/nf-core-logo.png){width="50%"}
+</center>
+<br>
+
+nf-core is a global community-led effort to curate and develop analytical workflows using Nextflow. All workflows published as part of nf-core are open source and there are a wide range of workflows published currently supporting analyses such as single-cell or ATAC-seq. The community itself is not specifically limited to bioinformatics, but most workflows published so far have all been within this domain. One point to be noted, is that the nf-core team has published standards and tools to create a styling guidelines for nf-core pipelines. However, any Nextflow workflow is able to use these standards and tools even if they do not wish to publish as part of nf-core. To view a list of all workflows (released and in development), please visit <https://nf-co.re/workflows>.
 
 # Intro to RNA-Seq
 
@@ -69,15 +81,16 @@ nf-core is a community-led effort to curate and develop a set of analysis workfl
 
 The FASTQ file on its own doesn’t really tell much information. In order to move forward with our project, these raw base calls need to be converted into raw expression data.
 
-![<https://nf-co.re/rnaseq/3.19.0>](imgs/nf-core_rnaseq.png)
+![<https://nf-co.re/rnaseq/3.19.0>](imgs/nf-core-rnaseq_metro_map_grey_animated.svg)
+<br>
 
-The rnaseq workflow developed and published by nf-core will be the workflow that this lesson will be uses to demonstrate Nextflow and nf-core
+The rnaseq workflow developed and published by nf-core will be the workflow that this lesson will be uses to demonstrate Nextflow and nf-core.
 
 This rnaseq workflow has a lot of tools that are part of it, and a user may choose to run it in default mode (tools that are executed by default), or configure it to run with more or less tools/steps.
 
 ------------------------------------------------------------------------
 
-**Note:** Importantly, this workflow is designed for short-read sequencing (e.g.: Illumina). Long-read bulk RNA-Seq requires distinct analytical steps which are linked to the nature of long read vs short read sequencing. While bulk long-read sequencing is beyond to scopre of this workshop, nf-core has workflows for long-read sequencing (e.g.: for more information see the `nf-core/nanoseq` workflow).
+**Note:** Importantly, this workflow is designed for short-read sequencing (e.g.: Illumina). Long-read bulk RNA-Seq requires distinct analytical steps which are linked to the nature of long read vs short read sequencing. While bulk long-read sequencing is beyond to scope of this workshop, nf-core has workflows for long-read sequencing (e.g.: for more information see the `nf-core/nanoseq` workflow).
 
 ------------------------------------------------------------------------
 
@@ -85,7 +98,7 @@ RNA-Seq workflows follows generally the below pattern:
 
 1.  Quality-control
 2.  Read trimming/filtering
-3.  Alignment or quasi-mapping
+3.  Read mapping (alignment, quasi-mapping or pseudo-alignment)
 4.  Counting / quantification
 
 The workflow contains several quality control steps in order to assist in the determination of any steps where an error may have happened or to determine viability of the samples as they progress through the workflow.
