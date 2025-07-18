@@ -1,7 +1,7 @@
 name: "Introduction to Bioinformatics Workflows with nf-core"
 output_dir: "docs"
 navbar:
-  title: "Introduction to Bioinformatics Workflows with nf-core"
+  title: "Bioinformatics with nf-core"
   left:
   - text: "Home"
     href: index.html
@@ -9,7 +9,8 @@ navbar:
   #  href: installation.html
   - text: "Nextflow and nf-core"
     href: intro_nextflow_nfcore.html
-  #- text: ""
+  - text: "nf-core/rnaseq"
+    href: rnaseq.html
   # text: "Additional resources"
   #  href: additional_resources.html
 
