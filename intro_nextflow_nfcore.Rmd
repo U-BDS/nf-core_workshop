@@ -1,5 +1,5 @@
 ---
-title: "Intro to nf-core"
+title: "Nextflow and nf-core"
 author: "Austyn Trull, Lara Ianov, Ph.D."
 ---
 
