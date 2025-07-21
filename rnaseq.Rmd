@@ -1,6 +1,9 @@
 ---
 title: "nf-core/rnaseq"
 author: "Austyn Trull, Lara Ianov, Ph.D."
+output:
+  html_document:
+    highlight: pygments 
 ---
 
 <!-- Add some CSS for horizontal scrolling in samplesheet blocks -->
@@ -20,14 +23,14 @@ author: "Austyn Trull, Lara Ianov, Ph.D."
 >
 > Has anyone performed any RNA-Seq analysis? What tools have you used?
 
-The FASTQ file on its own doesn’t really tell much information. In order to move forward with our project, these raw base calls need to be converted into raw expression data.
+The FASTQ file on its own doesn’t really tell much information. In order to move forward with the data for our workshop, these raw data will need to be converted into raw expression data.
+
+The rnaseq workflow developed and published by nf-core will be the workflow that this lesson will be uses to demonstrate Nextflow and nf-core: <https://nf-co.re/rnaseq/>
+
+This workflow has a lot of tools that are part of it, and a user may choose to run it in default mode (tools that are executed by default), or configure it to run with more or less tools/steps.
 
 ![<https://nf-co.re/rnaseq/3.19.0>](imgs/nf-core-rnaseq_metro_map_grey_animated.svg)
 <br>
-
-The rnaseq workflow developed and published by nf-core will be the workflow that this lesson will be uses to demonstrate Nextflow and nf-core.
-
-This rnaseq workflow has a lot of tools that are part of it, and a user may choose to run it in default mode (tools that are executed by default), or configure it to run with more or less tools/steps.
 
 ------------------------------------------------------------------------
 
@@ -50,7 +53,7 @@ Additionally the workflow also provides support for experimental specific approa
 
 A common initial step in RNA-Seq workflows is often read trimming and filtering. A common type of trimming is adapter trimming. Adapters are artificial sequences that are attached to the DNA fragments to be sequenced to ensure that the fragment attaches to the sequencing flow cell. Adapters are normally also sequenced with the fragment, meaning some of the reads may have bases that are not biological and can impact the accuracy of mapping and other downstream analyses. In order to alleviate this concern there are dedicated tools published that will remove adapters (also referred to as “adapter trimming”). Some examples of tools that do this are `TrimGalore`, `BBmap`, or `Trimmomatic.`
 
-The `nf-core/rnaseq` workflow additionally supports the removal of contamination with `bbsplit` (e.g.: xenograph experiment, or un-expected genomic contamination), and removal of ribosomal rna using `SortMeRNA`.
+The `nf-core/rnaseq` workflow additionally supports the removal of contamination with `bbsplit` (e.g.: xenograph experiment, or un-expected genomic contamination), and removal of ribosomal RNA using `SortMeRNA`.
 
 ### Alignment
 
@@ -68,7 +71,21 @@ Lastly, `Salmon` and `kallisto` are computationally efficient, leading to rapid 
 
 Feature (gene or transcript) quantification is typically the last analytical step of an RNA-Seq workflow. Importantly, the outputs of `Salmon` and `kallisto` are quantified counts, as opposed to `STAR` which are mapped data (BAM files), where an additional quantification tools is required. In the nf-core/rnaseq workflow `Salmon` is implemented as the read quantifier from a `STAR` alignment.
 
-The count outputs format typically contains a list of features (genes names or IDs) as rows and their relative abundance as columns for each sample.
+The count outputs format typically contains a list of features (genes names or IDs) as rows and their relative abundance as columns for each sample:
+
+<div style="width:40%; margin:auto; text-align:center;">
+
+|feature (e.g: genes)|quantified counts per sample*|
+|:----:|:----:|
+|feature1|102|
+|feature2|10|
+|feature3|502|
+|feature4|53|
+|feature5|300|
+
+</div>
+
+**Note***: the exact column names from a quantified matrix will be dependent on the quantifier - but the overall structure above (features by counts) is expected.
 
 ------------------------------------------------------------------------
 
@@ -78,27 +95,52 @@ As discussed earlier, the workflow we will cover also contains several additiona
 
 # Executing the nf-core/rnaseq workflow
 
-## Testing the workflow
+## Compute resources
 
-Importantly, when implementing a novel workflow or tool, it is critical to always test the workflow to ensure that it is installed and working properly. nf-core requires all workflows to have downsampled test data to be able to run a test profile.
+nf-core pipelines are designed to run seamlessly across a wide range of computing environments — from local computers to HPC systems and cloud platforms. At UAB, researchers and trainees have access to Cheaha, our dedicated HPC cluster, which offers significantly greater computational power than a typical local computer In this workshop, we will demonstrate how to execute an nf-core pipeline within the Cheaha environment, showcasing the benefits of leveraging HPC resources for large-scale bioinformatics analyses.
 
-We will be using UAB's supercomputer (called `Cheaha`) to run the nf-core/rnaseq workflow, since most common use-cases require resources that are not be readily available in local computers. More specifically, we'll be using the OnDemand application provided by UAB's Research Computing team, which provides an online interface to interact with Cheaha. Thus as a first step, we will need to navigate to the OnDemand website and login using your UAB login. The link can be found below:
+### Institutional profiles
 
-`https://rc.uab.edu/pun/sys/dashboard/`
+Institutional profiles are standardized Nextflow configuration files designed to support community members across various institutions. The use of an institutional profile is enabled via the `-profile` parameter, and it is maintained within the nf-core "configs" GitHub repository: <https://github.com/nf-core/configs>
+
+<br>
+<center>
+![<cheaha_profile>](imgs/cheaha_profile.png){width="60%"}
+</center>
+<br>
+
+The Cheaha UAB institutional profile was created by U-BDS, with detailed documentation at: <https://nf-co.re/configs/cheaha/>. In the demonstration section of this workshop, participants will see that this profile is enabled via the flag: `-profile cheaha`. Enabling this profile, allows users to leverage the full scope of an HPC system and its schedule. The profile automatically defines the executor (Slurm), enables Singularity, auto mounts specific directories in our HPC cluster, and defines partitions based on job resources.
+
+#### Changes to the Cheaha profile
+
+If you would like to see the Cheaha profile expanded beyond what is currently available, please contact the profile maintainers: Austyn Trull and Lara Ianov (yes, your workshop instructors!)
+
+Alternatively, if you have a specific use case which warrants a change which may not be suitable for a global wide change, you may adopt the profile into a Nextflow custom file. While this topic goes beyond the scope of this workshop, U-BDS is happy to address this request during weekly office hours.
+
+### Using Cheaha
+
+Research Computing (RC) offers detailed documentation at <https://docs.rc.uab.edu/> on tutorials for getting started with Cheaha. Overall, while there is more than one way of accessing the cluster, we will run our demonstration with the resources available through the OnDemand platform since this is a user-friendly interface across varying computational environments.
+
+OnDemand is available at: <https://rc.uab.edu/pun/sys/dashboard/>
 
 OnDemand provides an interactive file system that can be accessed by clicking on `Files` in the upper left of the OnDemand homepage, and then clicking `/scratch/<blazer_id>` in the dropdown (NOTE: The `<blazer_id>` in the path should be replaced with your blazer id).
 
-We'll navigate to the directory where we have moved the files downloaded from Globus, which can be done by double clicking on directories. Following the install instructions will have placed the files in the directory below (NOTE: The `<blazer_id>` in the path should be replaced with your blazer id):
+We'll navigate to the directory where we have moved the input files which will be used for the nf-core/rnaseq demo:
 
 ```         
-/scratch/<blazer_id>/rnaseq_workshop
+/scratch/<blazer_id>/nfcore_workshop
 ```
 
 > **NOTE**
 >
 > For this lesson, we'll be using the onDemand Editor provided by UAB Research Computing in order to edit and create files. However, if you are more comfortable using a software editor such as `vim`, `nano` , or `Visual Studio Code`, that is also acceptable.
 
-In order to run the workflow with test data, we’ll want to create a script to submit and run the Nextflow command, thus we will start by creating a file called `run_test_rnaseq.sh`. In order to create a file, click the `New File` button in the upper right of interactive file system, and in the dialog box type `run_test_rnaseq.sh`.
+
+## Testing the workflow
+
+Every nf-core pipeline is released with a downsampled test profile that allows users to quickly verify the pipeline and its configuration on their system. We strongly encourage users to take advantage of this profile to rule out any technical issues or configuration errors before running full-scale analyses.
+
+Below is a script which contains the test profile run for the nf-core/rnaseq data. This script has been named `run_test_rnaseq.sh` in the GitHub repository of this lesson. Each section of the script is subsequently explained:
 
 > **NOTE**
 >
@@ -114,7 +156,7 @@ This is known as a `shebang`. It is standard practice to put this line at the to
 
 The next lines we will add are known as slurm directives. Slurm directives are used to define how much resources are needed to execute the job, and define where to place stdout and stderr outputs from the command.
 
-```         
+```bash        
 #SBATCH --job-name=rnaseq_test
 #SBATCH --output=rnaseq_test.out
 #SBATCH --error=rnaseq_test.err
@@ -122,101 +164,50 @@ The next lines we will add are known as slurm directives. Slurm directives are u
 #SBATCH --partition=express
 #SBATCH --mem-per-cpu=5000
 #SBATCH --cpus-per-task=1
+
+# prep your environment
+# note that conda environment creation is listed in install instructions
+module load Anaconda3
+conda activate $USER_SCRATCH/conda_envs/nfcore_workshop
+
+# run test profile
+nextflow run nf-core/rnaseq -profile test,cheaha -r 3.19.0 --outdir output
+```
+
+The script above can be submitted with the following command via the commandline available from OnDemand (or alternatively, via a terminal from your computer if you `ssh` to the cluster):
+
+```bash
+sbatch run_test_rnaseq.sh
 ```
 
 To break down each line:
 
+**All `#SBATCH` lines are Slurm directives for our test job:**
+
 -   `--job-name` : Submitting code on the cluster is called a job. The `job-name` flag assigns a user-generated name to the job to allow for easier tracking. Job names should be short and descriptive in order to assist in determining a job. In this case we will be naming out job `rnaseq_test`
--   `--output` and `--error` : These are for defining files to place the `stdout` and `stderr` output of the command being submitted. Because these jobs are not interactive, if these flags are not defined, the output will be lost. Instead of providing the direct name to these directives, slurm provides file name patterns which can be used. For instance, adding `%j_%x.out` and `%j_%x.err` will generate outputs with the following file name pattern: job id and job name
+-   `--output` and `--error` : These are for defining files to place the `stdout` and `stderr` output of the command being submitted. Because these jobs are not interactive, if these flags are not defined, the output will be lost. Instead of providing the direct name to these directives, Slurm provides file name patterns which can be used. For instance, adding `%j_%x.out` and `%j_%x.err` will generate outputs with the following file name pattern: job id and job name
 -   `--time` : This defines the amount of time you expect a command to run. If a job runs longer than this command, it will be killed by Cheaha.
 -   `--partition` : There are a number of partitions available on Cheaha. The `express` partition is for jobs you expect to run in less than 2 hours. There are also `short`, `medium`, and `long` queues, which have their own maximum run time that can be found in the Cheaha documentation. It is recommended to choose the partition that best fits the needs of your workflow, as choosing the wrong one can result in your scripts being killed too soon or causing very long pending times.
 -   `--mem-per-cpu` : This defines how much memory a job will take multiplied by the number of cpus requested. There is not good way to determine the memory a job will take ahead of time, so it is very common for this to take some iteration as the script will be killed if it goes over the memory limit specified in this file.
 -   `--cpus-per-task` : This defines how many CPUs you expect a job to take.
 
-We are specifying pretty low memory and time requirements for this job as because this is downsampled data, it should run very quickly and require very little resources. Its also important to note that submitting a job like this will always require low memory since we are submitting what is known as the Nextflow runner job. The Nextflow runner's job is to just to submit the steps in the workflow that do the actual work for the workflow.
+We are specifying pretty low memory and time requirements for this job since test profiles are made of down-sampled / small data sets. Further, it's also important to note that submitting a job like this will always require low memory since we are submitting what is known as the **Nextflow runner job**. The Nextflow runner's job is to just to submit the steps in the workflow that do the actual work for the workflow.
 
-Next, we need to load our conda environment created from our installation instructions to ensure that the required software are active. This can be done with the following:
+**Environment**
 
-```         
-module load Anaconda3
-conda activate $USER_SCRATCH/conda_envs/rnaseq_workshop
-```
+Loading `Anaconda3` and activating our conda environment are necessary steps prior to the workflow start. This tells the script to initiate the dependencies needed to execute the pipeline.
 
-With all that completed, we can now place the Nextflow command in the file:
+**Execute the test profile along with the Cheaha profile**
 
-```         
-nextflow run nf-core/rnaseq -profile test,cheaha -r 3.19.0 --outdir output
-```
+The `nextflow` line contains are the needed parameters to test the installation of our workflow. Specifically:
 
-Breaking the Nextflow command down:
+-   `nextflow run` initiates a nextflow workflow. `nf-core/rnaseq` tells which nf-core workflow to run. This can be changed to any other nf-core pipeline available.
 
--   `nextflow run` is how to run any nextflow workflow. nf-core/rnaseq tells which nf-core workflow to run, if we were running a single-cell workflow, we’d use nf-core/scrnaseq.
+-   `-profile test, cheaha` : this tells nextflow which presets to use for the workflow. In this case, we enable both the `test` profile and the `cheaha` profile to execute the test run while also implementing the cheaha configuration file. One point to note is that if you pass in multiple profiles corresponding to the same workflow parameters, the last one takes precedence.
 
--   `-profile test, cheaha` : Profiles can be thought of as presets for a workflow. The workflow comes with a lot of defaults, but the profiles provide additional defaults for the workflow. The `test` profile tells the workflow that we are going to use the test data for the workflow. The `cheaha` profile is what is called an institutional profile, and the one for use at UAB is `cheaha`. But there are also other institutions and you are able to create your own if one doesn’t already exist. One point to note is that if you pass in multiple profiles corresponding to the same workflow parameters, the last one takes precedence.
-
--   The `-r` specifies a version of the workflow to use. This is an important parameter for reproducibility as we can force rnaseq to run at a specific version. If you do not use this parameter, the workflow will default to the latest version.
+-   The `-r` specifies a version of the workflow to use. This is an important parameter for reproducibility as we can force rnaseq to run at a specific version. If you do not use this parameter, the workflow will default to the latest version. We always recommend to specify a version, even when using the latest version.
 
 -   `--outdir output` With this flag we are noting where the workflow needs to place all the output files, in this case it will be a directory called `output`.
-
-In order to save the file, we click the `Save` button located in the upper right of the editor window.
-
-The final step is we need to submit our script to cheaha so it can be executed. The way we will accomplish that is via the commandline available from OnDemand. To access the commandline, click the `Open in Terminal` button located in the upper right of the interactive file system.
-
-We'll need to start by navigating to our `rnaseq_workshop` directory (NOTE: The `<blazer_id>` in the path should be replaced with your blazer id):
-
-```         
-# Note: /scratch/<blazer_id>/ can be replaced by $USER_SCRATCH variable
-cd /scratch/<blazer_id>/rnaseq_workshop
-```
-
-In order to submit the command we need to run the below command:
-
-```         
-sbatch run_test_rnaseq.sh
-```
-
-Once the command is run, you will see output similar to below:
-
-```         
-Submitted batch job 28085735
-```
-
-The number will be different, but this is giving you the job id, which can be used to query the job for additional information. You can monitor the job by running the below command (NOTE: The `<job_id>` in the command should be replaced with the job id obtained from the previous command):
-
-```         
-seff <job_id>
-```
-
-```         
-Job ID: 28085735
-Cluster: slurm_cluster
-User/Group: atrull/atrull
-State: COMPLETED (exit code 0)
-Cores: 1
-CPU Utilized: 00:00:00
-CPU Efficiency: 0.00% of 00:00:01 core-walltime
-Job Wall-clock time: 00:00:01
-Memory Utilized: 1.62 MB
-Memory Efficiency: 0.16% of 1.00 GB
-```
-
-Running that command will provide some basic information about the job being queried, you can see how much memory the job used, its walltime, and other information. For this workshop, we are mainly just wanting to check the `State` of the job, and determine when it has changed to `COMPLETED` as in the example, as this means the job has completed successfully.
-
-You may also check the running status of the Nextflow runner's jobs (and the jobs it submits) with the following command:
-
-```         
-squeue -u $USER
-```
-
-Once everything is completed, move on to the next section as we can conclude the workflow has been downloaded successfully.
-
-> **NOTE**
->
-> This section briefly introduces the concept of the institutional profile. The institutional profile is very useful as it allows users to configure nf-core workflows to better utilize the resources at their institution. However, due to the specificity the insitutional profile possesses, it is not recommended to run an instituional profile that does not match the institution you are running the analysis at as their resources may not the be same and can lead to errors or take resources from other users.
-
-> **NOTE**
->
-> The `cheaha` profile that is used within this lesson has a number of configurations to allow nf-core workflows to make better use of the cheaha supercomputer. It will direct jobs to the correct queue to ensure that jobs have minimal time between being submitted and run. It will also use the module system and native nextflow configuration to ensure that Singularity is used to process containers.
 
 ## Understanding the Dataset
 
@@ -559,6 +550,37 @@ nextflow run nf-core/rnaseq \
 > </details>
 
 ------------------------------------------------------------------------
+
+<!--
+Reminder to include the following after the execution of the main run (before was in the test profile):
+
+The number will be different, but this is giving you the job id, which can be used to query the job for additional information. You can monitor the job by running the below command (NOTE: The `<job_id>` in the command should be replaced with the job id obtained from the previous command):
+
+```         
+seff <job_id>
+```
+
+```         
+Job ID: 28085735
+Cluster: slurm_cluster
+User/Group: atrull/atrull
+State: COMPLETED (exit code 0)
+Cores: 1
+CPU Utilized: 00:00:00
+CPU Efficiency: 0.00% of 00:00:01 core-walltime
+Job Wall-clock time: 00:00:01
+Memory Utilized: 1.62 MB
+Memory Efficiency: 0.16% of 1.00 GB
+```
+
+Running that command will provide some basic information about the job being queried, you can see how much memory the job used, its walltime, and other information. For this workshop, we are mainly just wanting to check the `State` of the job, and determine when it has changed to `COMPLETED` as in the example, as this means the job has completed successfully.
+
+You may also check the running status of the Nextflow runner's jobs (and the jobs it submits) with the following command:
+
+```         
+squeue -u $USER
+```
+-->
 
 ## Anatomy of a Nextflow Run
 
