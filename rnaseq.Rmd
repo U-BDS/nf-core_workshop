@@ -14,6 +14,25 @@ output:
     overflow-x: auto;
     white-space: nowrap;
   }
+  
+pre {
+  background: none !important;
+  border: none !important;
+  overflow-x: auto;
+  padding: 0; /* Let inner code handle padding */
+  margin: 1em 0;
+}
+
+pre code {
+  background: #f8f8f8 !important;
+  display: inline-block;
+  min-width: 100%;
+  white-space: pre;
+  padding: 1em;
+  border: 1px solid #ddd;   /* border now follows scrollable area */
+  border-radius: 6px;
+  box-sizing: border-box;
+}
 </style>
 ```
 
@@ -49,7 +68,7 @@ The workflow contains several quality control steps in order to assist in the de
 
 Additionally the workflow also provides support for experimental specific approaches which we will not cover in today's workshop. This includes as an example: removal of genome contaminants in expected model types (e.g.: mouse PDX / xenograft) and inclusion of Unique Molecular Identifier (UMI) tagging for PCR deduplication (an optional molecular preparation step).
 
-### Trimming and Filtering
+### Trimming and filtering
 
 A common initial step in RNA-Seq workflows is often read trimming and filtering. A common type of trimming is adapter trimming. Adapters are artificial sequences that are attached to the DNA fragments to be sequenced to ensure that the fragment attaches to the sequencing flow cell. Adapters are normally also sequenced with the fragment, meaning some of the reads may have bases that are not biological and can impact the accuracy of mapping and other downstream analyses. In order to alleviate this concern there are dedicated tools published that will remove adapters (also referred to as “adapter trimming”). Some examples of tools that do this are `TrimGalore`, `BBmap`, or `Trimmomatic.`
 
@@ -93,7 +112,7 @@ As discussed earlier, the workflow we will cover also contains several additiona
 
 ------------------------------------------------------------------------
 
-# Executing the nf-core/rnaseq workflow
+# Executing nf-core/rnaseq
 
 ## Compute resources
 
@@ -146,17 +165,9 @@ Below is a script which contains the test profile run for the nf-core/rnaseq dat
 >
 > It is considered bad practice to execute any script or command that requires large amounts of resources on the login node of a supercomputer. Not only does it take resources from other users on the login node, but it can cause errors and system failures for the super computer itself, therefore **ALWAYS** ensure you either submit code to the computer OR execute code in an interactive session.
 
-Once the file is created, make sure it is highlighted in the file system window and click the `Edit` button located in the upper left of the screen, below the file path. In the new window, we'll start by entering the below text:
-
-```         
+```bash
 #!/usr/bin/env bash
-```
 
-This is known as a `shebang`. It is standard practice to put this line at the top of any script you make, as it is used by the computer to assist in determing which language the script will be using. In this case we are letting the computer know that this is `bash` script. Because this script needs to be submitted to Cheaha, it is especially important to place this line in the file. When the job is dispatched to a its own machine, the machine will not know how to execute the script and error immediately.
-
-The next lines we will add are known as slurm directives. Slurm directives are used to define how much resources are needed to execute the job, and define where to place stdout and stderr outputs from the command.
-
-```bash        
 #SBATCH --job-name=rnaseq_test
 #SBATCH --output=rnaseq_test.out
 #SBATCH --error=rnaseq_test.err
@@ -171,7 +182,7 @@ module load Anaconda3
 conda activate $USER_SCRATCH/conda_envs/nfcore_workshop
 
 # run test profile
-nextflow run nf-core/rnaseq -profile test,cheaha -r 3.19.0 --outdir output
+nextflow run nf-core/rnaseq -profile test,cheaha -r 3.19.0 --outdir results_test
 ```
 
 The script above can be submitted with the following command via the commandline available from OnDemand (or alternatively, via a terminal from your computer if you `ssh` to the cluster):
@@ -184,8 +195,9 @@ To break down each line:
 
 **All `#SBATCH` lines are Slurm directives for our test job:**
 
--   `--job-name` : Submitting code on the cluster is called a job. The `job-name` flag assigns a user-generated name to the job to allow for easier tracking. Job names should be short and descriptive in order to assist in determining a job. In this case we will be naming out job `rnaseq_test`
--   `--output` and `--error` : These are for defining files to place the `stdout` and `stderr` output of the command being submitted. Because these jobs are not interactive, if these flags are not defined, the output will be lost. Instead of providing the direct name to these directives, Slurm provides file name patterns which can be used. For instance, adding `%j_%x.out` and `%j_%x.err` will generate outputs with the following file name pattern: job id and job name
+-   `#!/usr/bin/env bash`: This is known as a `shebang`. It is standard practice to put this line at the top of any script you make, as it is used by the computer to assist in determing which language the script will be using. In this case we are letting the computer know that this is `bash` script. 
+-   `--job-name` : Submitting code on the cluster is called a job. The `job-name` flag assigns a user-generated name to the job to allow for easier tracking. Job names should be short and descriptive in order to assist in determining a job. In this case we will be naming out job `rnaseq_test`.
+-   `--output` and `--error` : These are for defining files to place the `stdout` and `stderr` output of the command being submitted. Because these jobs are not interactive, if these flags are not defined, the output will be lost. Instead of providing the direct name to these directives, Slurm provides file name patterns which can be used. For instance, adding `%j_%x.out` and `%j_%x.err` will generate outputs with the following file name pattern: job id and job name.
 -   `--time` : This defines the amount of time you expect a command to run. If a job runs longer than this command, it will be killed by Cheaha.
 -   `--partition` : There are a number of partitions available on Cheaha. The `express` partition is for jobs you expect to run in less than 2 hours. There are also `short`, `medium`, and `long` queues, which have their own maximum run time that can be found in the Cheaha documentation. It is recommended to choose the partition that best fits the needs of your workflow, as choosing the wrong one can result in your scripts being killed too soon or causing very long pending times.
 -   `--mem-per-cpu` : This defines how much memory a job will take multiplied by the number of cpus requested. There is not good way to determine the memory a job will take ahead of time, so it is very common for this to take some iteration as the script will be killed if it goes over the memory limit specified in this file.
@@ -203,79 +215,58 @@ The `nextflow` line contains are the needed parameters to test the installation 
 
 -   `nextflow run` initiates a nextflow workflow. `nf-core/rnaseq` tells which nf-core workflow to run. This can be changed to any other nf-core pipeline available.
 
--   `-profile test, cheaha` : this tells nextflow which presets to use for the workflow. In this case, we enable both the `test` profile and the `cheaha` profile to execute the test run while also implementing the cheaha configuration file. One point to note is that if you pass in multiple profiles corresponding to the same workflow parameters, the last one takes precedence.
+-   `-profile test,cheaha` : this tells nextflow which presets to use for the workflow. In this case, we enable both the `test` profile and the `cheaha` profile to execute the test run while also implementing the cheaha configuration file. One point to note is that if you pass in multiple profiles corresponding to the same workflow parameters, the last one takes precedence.
 
 -   The `-r` specifies a version of the workflow to use. This is an important parameter for reproducibility as we can force rnaseq to run at a specific version. If you do not use this parameter, the workflow will default to the latest version. We always recommend to specify a version, even when using the latest version.
 
--   `--outdir output` With this flag we are noting where the workflow needs to place all the output files, in this case it will be a directory called `output`.
+-   `--outdir results_test` With this flag we are noting where the workflow needs to place all the output files, in this case it will be a directory called `results_test`.
 
-## Understanding the Dataset
+## Understanding the dataset
 
 Let's start moving to actual data. In order to run the data, it's important to understand the data a little more before proceeding.
 
 The data comes from the following paper: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6096346/>
 
-The data that we will be analyzing is mouse transplant data. The original paper contains 12 samples in total - 4 naive controls, 4 from 2 hours past transplant, and 4 from 24 hours past transplant. For this workshop, we will only be concerned with the controls and the 24 hour samples. We will be using the results from a workflow run that contained only these samples for the tertiary portion, and will be reviewing the reports for later in this portion of the lesson. In addition, we are going to run down sampled versions of the data for teaching purposes, but the steps we will follow will be largely applicable to the full dataset.
+The data that we will be analyzing is mouse transplant data. The original paper contains 12 samples in total - 4 naive controls, 4 from 2 hours past transplant, and 4 from 24 hours past transplant. For this workshop, we will only be concerned with the controls and the 24 hour samples (however, note that all 12 samples are provided in the Globus endpoint).
 
-Another point to note is that the paper we are obtaining the data from is a beginner’s guide for RNA-Seq published about 10 years ago. Given the timeline, you will note that are some differences from the analysis that was done for the paper versus the analysis done today. The reason is a lot of the tools used by the paper are considered outdated or have been phased out of the field. Bioinformatics and computational biology are fast-paced domains. Thus, it is important to ensure that all analyses are using correct and modern approaches. In summary, always ensure that the tools and workflows you apply to your analysis are up to date to what is considered best practice in the RNA-Seq domain.
+Another point to note is that the paper we are obtaining the data from is a beginner’s guide for RNA-Seq published about 7-8 years ago. Given the timeline, you will note that are some differences from the analysis that was done for the paper versus the analysis done today. The reason is a lot of the tools used by the paper are considered outdated or have been phased out of the field. Bioinformatics and computational biology are fast-paced domains. Thus, it is important to ensure that all analyses are using correct and modern approaches. In summary, always ensure that the tools and workflows you apply to your analysis are up to date to what is considered best practice in the RNA-Seq domain.
 
-## Creating the Samplesheet
+## Creating the samplesheet
 
 So lets work on running the workflow on actual data. The RNAseq workflow (like most nf-core workflows) receives input via a samplesheet. The format of which can be seen here:
 
 <https://nf-co.re/rnaseq/3.19.0/docs/usage>
 
-We will again want to open the interactive file system from UAB Research Computing's OnDemand application, and navigate to the below directory (NOTE: The `<blazer_id>` in the path should be replaced with your blazer id):
-
-```         
-/scratch/<blazer_id>/rnaseq_workshop
-```
-
-We will want to start by creating a file called `samplesheet.csv`. In order to create a file, click the `New File` button in the upper right of interactive file system, and in the dialog box type `samplesheet.csv`.
-
-Once the file is created, make sure it is highlighted and click the `Edit` button located. In the new window, enter the below text.
-
-```         
-sample,fastq_1,fastq_2,strandedness
-```
-
-We’ve put the header into the samplesheet, so let’s save the samplesheet because we need to also include the FASTQs.
-
-The next step in creating the samplesheet is to populate it with information. The way we will do that is via the commandline available from OnDemand. To access the commandline, click the `Open in Terminal` button located in the upper right of the interactive file system.
-
-In order to get the list of fastqs, we'll run the below command.
-
-```         
-for file in input/downsample_fastqs/*.fastq.gz; do echo $file; done
-```
-
-That will output all the FASTQs we will be working with. Lets redirect the output to the end of the samplesheet
-
-```         
-for file in input/downsample_fastqs/*.fastq.gz; do echo $file; done >> samplesheet.csv
-```
-
-Open up the samplesheet again. You will see the header and a list of FASTQs. To start modifying it, a sample name needs to be added with some additional commas.
-
-**Note**: the path below in the example samplesheet is relative to our own Globus endpoint. You should use the paths from the for loops outputs shown above.
+Thus, a completed samplesheet (named `samplesheet.csv` in our workshop materials) with 8 samples from the available 12 from this dataset, looks like the following:
 
 ::: scrollable-horizontal
 ```{=html}
 <pre>
 sample,fastq_1,fastq_2,strandedness
-N02_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/downsample_fastqs/SRX4328049_SRR7457560.fastq.gz,,auto
-N01_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/downsample_fastqs/SRX4328050_SRR7457559.fastq.gz,,auto
-N04_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/downsample_fastqs/SRX4328051_SRR7457558.fastq.gz,,auto
-N03_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/downsample_fastqs/SRX4328052_SRR7457557.fastq.gz,,auto
-R08_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/downsample_fastqs/SRX4328047_SRR7457562.fastq.gz,,auto
-R07_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/downsample_fastqs/SRX4328048_SRR7457561.fastq.gz,,auto
-R06_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/downsample_fastqs/SRX4328057_SRR7457552.fastq.gz,,auto
-R05_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/downsample_fastqs/SRX4328058_SRR7457551.fastq.gz,,auto
+N02_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328049_SRR7457560.fastq.gz,,auto
+N01_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328050_SRR7457559.fastq.gz,,auto
+N04_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328051_SRR7457558.fastq.gz,,auto
+N03_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328052_SRR7457557.fastq.gz,,auto
+R08_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328047_SRR7457562.fastq.gz,,auto
+R07_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328048_SRR7457561.fastq.gz,,auto
+R06_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328057_SRR7457552.fastq.gz,,auto
+R05_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328058_SRR7457551.fastq.gz,,auto
+
 </pre>
 ```
 :::
 
-The sample name is completely up to the user, so pick something that will help with identification for yourself if there is not an already existent sample name. Strandedness we have set to `auto` for the purposes of the workshop, if you know if the data is forward or reverse stranded by all means use that instead.
+Please note that the path above is relative to the U-BDS Globus endpoint which hosts this data. You will need to update the path to the directory contianing the copy of this data (e.g.: your `USER_SCRATCH`)
+
+Note that the first row should contain the expected column names: `sample,fastq_1,fastq_2,strandedness`
+
+To break down each column:
+
+-   `sample` : Sample identifier for the FASTQ file. If you have technical replicates of the same biological samples, rows with the same sample identifier will be automatically concatenated in the pipeline.
+-   `fastq_1`: Path to the R1 read of the FASTQ file or the single-ended read. Please note that the path above is relative to the U-BDS Globus endpoint which hosts this data. You will need to update the path to the directory contianing the copy of this data (e.g.: your `USER_SCRATCH`)
+-   `fastq_2`: Path to the R2 read of the FASTQ file. For single-ended data, leave this column blank.
+-   `strandedness`: Library strandness. This is linked to the library preparation method implemented. If unknown, indicate `auto` - for auto-detection within the pipeline.
+
 
 > **Discussion Question**
 >
@@ -287,165 +278,72 @@ The sample name is completely up to the user, so pick something that will help w
 >
 > <summary>**Click here for solution**</summary>
 >
-> We would need to fill in the column that is left blank. The samplesheet headers help guide us in what information needs to be placed in each column. In this case, `fastq_1` would correspond to the read 1 fastq and `fastq_2` would correspond to the read 2 fastq.
+> We would need to fill in the column that is left blank with the path of the R2 reads. The samplesheet headers help guide us in what information needs to be placed in each column. In this case, `fastq_1` would correspond to the read 1 fastq and `fastq_2` would correspond to the read 2 fastq.
 >
 > </details>
 
-## Adding workflow Parameters
+## Adding workflow parameters
 
 One point of customization is the workflow parameters. The amount of configurability the parameters provide is very dependent on the workflow and the workflow authors, so we won’t be able to customize every aspect of the workflow, but parameters are often based on common requests by users of the workflow.
 
-The parameter options for an nf-core can be found on the workflow website, for rnaseq its available here: <https://nf-co.re/rnaseq/3.19.0/parameters>
+The parameter options for an nf-core can be found on the workflow website, for rnaseq v 3.19.0, it's available here: <https://nf-co.re/rnaseq/3.19.0/parameters>
 
 While there are a lot of options, it's very rare that you will need all of these as the workflow authors have set sensible parameters. But these range from everything - from required inputs to which steps to run in the workflow. It is **heavily encouraged** to read through this when doing your own analysis to evaluate if there are any flags that may apply, as well as to note the default flag values as these can have notable impact on analyses.
 
 Parameters are able to be passed as flags to the command line or via a yaml file. For the workshop, we will use the yaml option in order to keep the workflow execution command more straight-forward.
 
-Inside the `/scratch/<blazer_id>/rnaseq_workshop` directory, we want to create a new file called `params.yml`. Once created, let's open the file up for editing.
+For the workshop demonstration, the parameters in our `params.yml` file are:
 
-```         
+```yaml        
 # names/email
-email: "atrull@uab.edu"
-multiqc_title: "rnaseq_workshop"
-```
+# email: "" # disabled for our demo run
+multiqc_title: "nfcore_rnaseq_demo"
 
-The first parameters to add are our email and the title. We’ll get an email anytime the workflow fails or succeeds.
-
-```         
 # input samplesheet
 input: "./samplesheet.csv"
 
 # Genome references
-fasta: "/path/to/fasta"
-gtf: "/path/to/gtf"
+fasta: "/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/references/GRCm39.primary_assembly.genome.fa"
+gtf: "/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/references/gencode.vM32.annotation.gtf"
 gencode: true
-```
 
-Next we’ll provide the required parameters. `input` is the path to the samplesheet. `fasta` and `gtf` are the paths to the FASTA and GTF files to be used for the analysis. Note that these can be obtained from the GENCODE website at <https://www.gencodegenes.org/>. For genomes not available you can also find reference files at the Ensembl website <https://useast.ensembl.org/index.html>. If you use GENCODE reference files, be sure to set the `gencode` parameter to `true`. For this workshop we have provided the GENCODE reference (version M32) in the data downloaded from Globus (`reference` folder).
-
-```         
 # Read Trimming Options
 trimmer: "trimgalore"
 extra_trimgalore_args: "--illumina"
-min_trimmed_reads: 1
-```
 
-We are going to use `trim_galore` for the trimmer. The workflow also provides `fastp` as an option. Neither one of these is necessarily better than the other, `trim_galore` provides a wrapper around an older tool called `cutadapt` and `FASTQC.` Trim_galore will try to guess the adapters it needs to cut, but you can limit this by passing specific parameters. This dataset uses the illumina default adapters, so the `--illumina` flag needs to be passed to the tool.
-
-We will additionally use the `min_trimmed_reads` param. This parameter is used to set what the minimum number of reads a sample will need to have after trimming. The value of this parameter and whether it needs to be used depends on the experiment and on the data being analyzed. We are using this parameter as we are using downsampled files, and will not meet the default value for this parameter.
-
-```         
 # Alignment Options
 aligner: "star_salmon"
 pseudo_aligner: "salmon"
-```
+extra_salmon_quant_args: "--seqBias --gcBias"
 
-The aligner we use is `star_salmon`. For rnaseq, this means `STAR` will be the aligner and `Salmon` will be used for quantification. We also instruct the workflow to run quasi-mapping with `Salmon`. The choice of which to use for your analysis is dependent on factors including experimental design, and resource limitations. As previously discussed, if you also have genome data being processed you may want to use the `STAR` (followed by `Salmon` quantification), since it outputs genomic mapping data. We typically execute the workflow so that both types of mapping strategies are executed (as demonstrated above). This way, the situation never arises where the workflow needs to be rerun just to generate the files from the opposite aligner.
-
-```         
 # Quality Control
 deseq2_vst: true
 ```
 
-We'll also add this parameters for the run.
+-   `email` : an optional parameter that we have disabled, but recommended if you would like email notifications.
+-   `multiqc_title` : title to the MultiQC report.
+-   `input` : path to the `samplesheet.csv`.
+-   `fasta` : path to the genome FASTA reference file.
+-   `gtf` : path to the GTF reference file.
+-   `gencode` : boolean (`true` or `false`) indicating if the GTF is in GENCODE database format (<https://www.gencodegenes.org/>). The reference provided by this workshop is derived from GENCODE.
+-   `trimmer` : indicate tool to be used for trimming. `trimgalore` is the default - we specify for demonstration purposes.
+-   `extra_trimgalore_args` : arguments within `trimgalore` which can be specified. As an example `--illumina` is `trimgalore` parameter.
+-   `aligner` : Aligner of choice. `star_salmon` indicates the nf-core/rnaseq will execute `STAR` for the alignment, followed by `salmon` for quantification
+-   `pseudo_aligner` : Pseudo-aligner/quasi-mapping of choice. `salmon` indicates that the data will be quasi-mapped and quantified by Salmon.
+-   `extra_salmon_quant_args` : arguments within `salmon` which can be specified here.  As an example `--seqBias --gcBias` are `salmon` parameter which we commonly use.
+-   `deseq2_vst` : boolean for the implementation of DESeq2's vst transformation over rlog.
 
--   `deseq2_vst` will use the vst transformation over deseq's rlog. This is ideal as vst is faster to run and more suitable for larger datsets. We will see more about this in the tertiary analysis section.
-
-## Additional Customization
-
-workflow parameters are very useful, but can only get so far. An additional route of customization is to use the custom configuration ("configs") files implemented within Nextflow. Custom configs allow customization of everything from resource allocations to addition of parameters to specific tools in the workflow.
-
-To demonstrate this, let's start by creating a file called `custom.conf`, and adding the below lines.
-
-```         
-process {
-    executor = 'slurm'
-    queue = ‘amd-hdr100’
-}
-```
-
-Custom configuration works off the idea of scopes – what this means is users can group settings so they apply to specific pieces of the workflow.
-
-The above lines of code set the executor to be slurm, and set the queue so that all jobs will be submitted to the `amd-hdr100` partition on cheaha.
-
-Another item that can be configured via this method is adding parameters to specific tools in the workflow. In order to do that, you will need to find the module. For this example, let’s modify the Salmon script. There is a way to do this via the workflow parameters (with the `extra_salmon_quant_args` parameter), however, this is a good opportunity to show custom configuration to workflow tools.
-
-The first step to do that is to find the name of the process. For this step, it's important to understand the nf-core directory structure a little better. Let’s start by changing into the rnaseq directory that was downloaded when the test command was executed.
-
-Open up the OnDemand Terminal and run the below command.
-
-```         
-cd ~/.nextflow/assets/nf-core/rnaseq/
-```
-
-The directory above contains the copy of the workflow source code matching the version which we specified in the run. This can also be found in GitHub noting that the following links to the same workflow version used here: <https://github.com/nf-core/rnaseq/tree/3.19.0>.
-
-For the purpose of this workshop, we will explore some of the source code from our local copy.
-
-There’s a lot of files and directories in here, breaking down the directories one at a time:
-
--   `assets` - Contains images and tool-specfic files
-
--   `bin` - Contains scripts used by the workflow
-
--   `conf` - Contains workflow configuration files
-
--   `docs` - Contains documentation
-
--   `lib` - Contains groovy libraries for the workflow to use
-
--   `modules` - Contains the nextflow process files for individual tools. It is further split into ‘local’ modules which are unique to the workflow and ‘nf-core’ modules which are files that have been obtained from a central repo.
-
--   `subworkflows` and `workflows` - Contains the actual workflow files themselves. `subworkflows` are parts of a workflow that are repeated multiple times so are abstracted out of the main workflow to alleviate the maintenance burden.
-
-There are additional files in the workflow directory, but most of these are used for either documentation or for the workflow template. For the purposes of this workshop, these are largely unimportant but are very important should someone choose to write an nf-core style workflow.
-
-To find Salmon, we need to search down the `modules` directory. There are two bash commands that can be executed to find the Salmon process file:
-
-```         
-find modules -name "*salmon*"
-```
-
-OR
-
-```         
-grep -rl "salmon" modules/
-```
-
-The `find` command assumes that there is a file or directory that is named like the tool, this isn’t always the case so the grep can help in the cases where find fails to find anything.
-
-We can see that the salmon module is located at `modules/nf-core/salmon/quant`. Let's take a look at the process file:
-
-```         
-cat modules/nf-core/salmon/quant/main.nf
-```
-
-The name of the process is at the very top of the file, which is what we need. Feel free to explore this, but a lot of this is Nextflow syntax. Special attention should be paid to the command for the tool which is located towards the bottom of the file.
-
-With the name of the process, let’s go back and open up the custom configuration file using the OnDemand Editor and add the below lines.
-
-```         
-process {
-  withName: ‘.*:SALMON_QUANT’ {
-      ext.args = ‘--gcBias --seqBias’
-  }
-}
-```
-
-With this customization, Nextflow will add the two additional flags. The flags themselves tell `Salmon` to correct for gc and sequence bias. We use `withName` to limit the additions to only the salmon process, as opposed to all other tools. Since `withName` respects regular expressions we use the `.*` to act as a catchall for all salmon jobs.
-
-There are additional ways you can use this config, controlling whether Nextflow processes are run with Singularity or Docker, further configurations with processes such as controlling memory or cpus making this method a very powerful tool for modifying a workflow without changing the source code (this is known as modularity).
 
 ## Submitting the workflow
 
-With all the files created, we can submit the workflow. We'll create a `run_rnaseq.sh` file, and put the below lines in it. Note that while we're increasing the time limit, we aren't increasing any other resources for the job because we are only submitting the Nextflow runner which requires very minimal resources. In general when submitting the Nextflow runner, the main resource that may need increasing is the `--time` flag as that determines how much time you are allocating for the workflow to run.
+With all configuration related files created, we can now submit the workflow with the `run_rnaseq.sh` script below:
 
-```         
+```bash    
 #!/usr/bin/env bash
 
-#SBATCH --job-name=rnaseq_subsample
-#SBATCH --output=rnaseq_subsample.out
-#SBATCH --error=rnaseq_subsample.err
+#SBATCH --job-name=nfcore_rnaseq
+#SBATCH --output=nfcore_rnaseq.out
+#SBATCH --error=nfcore_rnaseq.err
 #SBATCH --time=12:00:00
 #SBATCH --partition=short
 #SBATCH --mem-per-cpu=5000
@@ -453,140 +351,40 @@ With all the files created, we can submit the workflow. We'll create a `run_rnas
 
 # load environment
 module load Anaconda3
-conda activate $USER_SCRATCH/conda_envs/rnaseq_workshop
+conda activate $USER_SCRATCH/conda_envs/nfcore_workshop
 
 # run workflow
 nextflow run nf-core/rnaseq \
-    --outdir ./subsample_results \
+    --outdir ./results \
     -profile cheaha \
     -r 3.19.0 \
-    -params-file ./params.yml \
-    -c custom.conf
+    -params-file ./params.yml
 ```
 
-> **Discussion Question**
->
-> So we have currently submitted the downsampled data. Can anyone tell me what we would need to change in order to run the full dataset as if we were doing a complete analysis?
->
-> <details>
->
-> <summary>**Click here for solution**</summary>
->
-> The files that need to be updated are provided below with a description of what needs to be changed.
->
-> `samplesheet.csv` needs to have the file paths in the `fastq_1` column to point to the full dataset.
->
-> ::: scrollable-horizontal
-> ```{=html}
-> <pre>
-> sample,fastq_1,fastq_2,strandedness
-> N02_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328049_SRR7457560.fastq.gz,,auto
-> N01_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328050_SRR7457559.fastq.gz,,auto
-> N04_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328051_SRR7457558.fastq.gz,,auto
-> N03_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328052_SRR7457557.fastq.gz,,auto
-> R08_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328047_SRR7457562.fastq.gz,,auto
-> R07_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328048_SRR7457561.fastq.gz,,auto
-> R06_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328057_SRR7457552.fastq.gz,,auto
-> R05_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328058_SRR7457551.fastq.gz,,auto
-> </pre>
-> ```
-> :::
->
-> `custom.conf` would remove the section we added to route all jobs to the `amdhdr-100` queue. We want the jobs to go to the 'correct' queue since we would be processing the full dataset and may require different resources that would better suit a different queue.
->
-> ``` custom.conf
-> process{
-> withName: ‘.*:SALMON_QUANT’{
->    ext.args = ‘--gcBias --seqBias’
-> }
-> ```
->
-> `run_rnaseq.sh` maintains the same time limit as our downsample data. For most RNA-seq analysis, this is sufficient, but if your workflow fails due to time limit, simply increase this further.
->
-> ``` run_rnaseq.sh
-> #!/usr/bin/env bash
->
-> #SBATCH --job-name=rnaseq_full
-> #SBATCH --output=rnaseq_full.out
-> #SBATCH --error=rnaseq_full.err
-> #SBATCH --time=12:00:00
-> #SBATCH --partition=short
-> #SBATCH --mem-per-cpu=5000
-> #SBATCH --cpus-per-task=1
->
-> # load environment
-> module load Anaconda3
-> conda activate $USER_SCRATCH/conda_envs/rnaseq_workshop
->
-> # run workflow
-> nextflow run nf-core/rnaseq \
->    --outdir ./full_results \
->    -profile cheaha \
->    -r 3.19.0 \
->    -params-file ./params.yml \
->    -c custom.conf
-> ```
->
-> </details>
+The script above can be sumited with `sbatch run_rnaseq.sh`
 
-> **Discussion Question**
->
-> In the runs above, we wrote a custom configuration for the Salmon flags as an demostration of how to pass in tool-specific parameters for nf-core workflows. This was a good example on how to configure your workflow in a more advanced manner (e.g.: when no alternative approach exist).
->
-> However, the workflow authors have also provided explicit parameters in this workflow which enables users to accomplish the same task in a more straight-forward manner. From looking at the documentation, what is the alternative approach of providing the `--gcBias --seqBias` parameters to Salmon?
->
-> <details>
->
-> <summary>**Click here for solution**</summary>
->
-> You can add the following to your `params.yml` with the workflow flag `extra_salmon_quant_args`
->
-> ```         
-> extra_salmon_quant_args: "--seqBias --gcBias"
-> ```
->
-> **NOTE**: this option only became available with version \>= 3.10. This is a good example of the advantages of always checking the workflow release notes for updates/improvements and bug fixes.
->
-> </details>
+Note that the script above, is similar to how we executed the `test` profile. The changes are highlighted below:
+
+-   `#SBATCH` resources : since this run is expected to take longer than the `test` profile, we have increased the time limit and selected a more suitable partition to allow the Nextflow runner to stay active the entire duration of the run. When running a pipeline on a new dataset, the required runtime for the runner may not be immediately apparent. In such cases, some trial and error is often necessary to determine the optimal time allocation and partition for efficient execution.
+-   `-profile` : the selected profile is now only the `cheaha` profile.
+-   `-params-file` : the path to the yaml file containing our pipeline parameters.
+
+### Inspecting a running job
+
+There are various ways which you can check your running jobs. Here are a few methods that we can check a running job:
+
+1. You can check the standard output and error files (`.out` and `.err`) for logs. They are expected to be updated as the run goes, and if an error occurs, these can be good starting point for troubleshooting.
+2. Regardless of the standard output/error files, Nextflow will always generate a log file named `.nextflow.log` in the current working directory. Note the `.` in front of the file name - thus this is a hidden file that can only be listed from `ls` with the flag `a` (e.g.: `ls -la`).
+3. You may also check the running status of the Nextflow runner's jobs (and the jobs it submits) with the following command: `squeue -u $USER`. This command will list all running jobs, including the Nextflow runner job along with all jobs submitted to the cluster (since we are using the `cheaha` profile).
+4. Slurm job IDs - they can be useful to fetch specific job information. One common command is `seff <job_id>`. The `seff` output provides an overview of the job state and how many resources it used. Another alternative, which can provides a lot more detail is `sacct -j <job_id>`, nothing that `sacct` has wide range of information that can be outputted via the flag `--format`, e.g.: `sacct -j <job_id> --format=JobID,Start,End,Elapsed,NCPUS,NodeList,NTask,Timelimit,ReqMem`. The options to `--format` can be viewed [here](https://slurm.schedmd.com/sacct.html#OPT_helpformat).
 
 ------------------------------------------------------------------------
 
-<!--
-Reminder to include the following after the execution of the main run (before was in the test profile):
+# Anatomy of a Nextflow run
 
-The number will be different, but this is giving you the job id, which can be used to query the job for additional information. You can monitor the job by running the below command (NOTE: The `<job_id>` in the command should be replaced with the job id obtained from the previous command):
+## Workflow metrics
 
-```         
-seff <job_id>
-```
-
-```         
-Job ID: 28085735
-Cluster: slurm_cluster
-User/Group: atrull/atrull
-State: COMPLETED (exit code 0)
-Cores: 1
-CPU Utilized: 00:00:00
-CPU Efficiency: 0.00% of 00:00:01 core-walltime
-Job Wall-clock time: 00:00:01
-Memory Utilized: 1.62 MB
-Memory Efficiency: 0.16% of 1.00 GB
-```
-
-Running that command will provide some basic information about the job being queried, you can see how much memory the job used, its walltime, and other information. For this workshop, we are mainly just wanting to check the `State` of the job, and determine when it has changed to `COMPLETED` as in the example, as this means the job has completed successfully.
-
-You may also check the running status of the Nextflow runner's jobs (and the jobs it submits) with the following command:
-
-```         
-squeue -u $USER
-```
--->
-
-## Anatomy of a Nextflow Run
-
-### Workflow Metrics
-
-Inside the `subsample_results` directory, there is a `workflow_info` directory that contains the metrics and statistics for the jobs the workflow submitted to the cluster. We are going to review the report and timeline files.
+Inside the `results` directory, there is a `workflow_info` directory that contains the metrics and statistics for the jobs the workflow submitted to the cluster. We are going to review the report and timeline files.
 
 ![](imgs/report.png)
 
@@ -596,11 +394,11 @@ The report file provides details on the resource and timings for each process th
 
 The timeline file provides a detailed timeline noting when each process was executed. This is especially useful in being able to estimate how long a workflow may take and to identify long running tools.
 
-### Workflow Outputs
+## Workflow outputs
 
 The rnaseq workflow produces a lot of output files. Many of them are for qc and general review of the workflow user. Due to the amount of files, we will only go over some of the more commonly used files in this workshop, but note that this workflow (along with other nf-core workflows) have dedicated documentation for noting the various output files. For nf-core/rnaseq, the description of all the output files can be found [here](https://nf-co.re/rnaseq/3.19.0/docs/output).
 
-#### MultiQC Report
+### MultiQC report
 
 The first point of review for the workflow is the multiqc report. MultiQC is a very useful tool that aggregates a number of different tools into a single report, providing a quick way of reviewing the quality of the data to determine if there are any potential concerns.
 
@@ -694,9 +492,9 @@ The workflow summary indicates what parameters and options were used during the 
 
 ### Workflow Intermediary Files
 
-The Nextflow `work` directory contains all the files generated by the workflow. Unfortunately, Nextflow hashes all of its processes for both memory and to assist with caching, however it makes it much harder for us to locate information for the individual processes.
+The Nextflow `work` directory contains all the files generated by the workflow. Nextflow hashes all of its processes for both memory and to assist with caching, however it makes it much harder for us to locate information for the individual processes.
 
-While we will show how to navigate the `work` directory later this lesson, we can still take a look inside one of these subdirectories to show what they contain. Inside each work subdirectory, you'll find the following files:
+Along with the process outputs, the `work` directory typically contains:
 
 -   `.command.begin`: This file contains commands that need pre-execution setup steps. This file is always generated, even if there are no pre-execution setup steps.
 -   `.command.run`: This file is a wrapper script by Nextflow used to launch `.command.sh` and capture environment information
@@ -709,74 +507,4 @@ While we will show how to navigate the `work` directory later this lesson, we ca
 -   Input files: These are files or symlinks defined as inputs to the process.
 -   Output files: These are files generated by the process as defined by the process.
 
-# Troubleshooting
-
-Another useful skill when running Nextflow workflows is the ability to troubleshoot workflows.
-
-We've reviewed the results, but we are still unsure if the arguments we passed in with the custom config were applied to the workflow. In our case, we are wanting to make sure that the process names `SALMON_QUANT` had the `--gcBias --seqBias` flags added to its command
-
-As mentioned earlier, all this information is held within the `work` directory but difficult to navigate. In order to find our command, we'll need to use the Nextflow log command:
-
-```         
-nextflow log
-```
-
-With no arguments, this command will produce a history of Nextflow workflows. It produces some basic metrics, such as start date, duration, and even the command that was used to execute the workflow.
-
-Its also important to note the output are ordered such that newer runs are at the bottom of the list and older runs are at the top. Our test run should be the last item in the list (or the only item in the list in the case it's the only entry).
-
-> Discussion Question
->
-> What happens if you run this command in a different directory?
->
-> You may get output that looks like the below:
->
-> `It looks like no workflow was executed in this folder (or execution history is empty)`
->
-> The Nextflow log command uses a hidden folder called `.nextflow`. This directory contains the information for all nextflow runs that have bene executed within that directory. As a result, `nextflow log` is only useful in locations where there have been nextflow runs.
-
-In order to continue, we'll need to obtain the run name for our Nextflow run. Run names are in the third column of the Nextflow log output, and for our run it will be in the last row in the output of Nextflow log. The run name is a randomly generated phrase of two words separated by an underscore. For the sake of simplicity, I'll be using the name of my run (`thirsty_heisenberg`) in the examples below, but just note that your run name is expected to be different and just use your run name in place of mine when running the below commands.
-
-```         
-nextflow log thirsty_heisenberg
-```
-
-This time when we run the Nextflow log command, we receive a list of file paths. These paths are the work directories used by the workflow, but they don't really mean anything to us as we still don't know what they mean.
-
-```         
-nextflow log thirsty_heisenberg -l
-```
-
-We need to configure the columns produced by our Nextflow line, by running the same command with the `-l` flag we will produce all the column names the tool will produce. We are wanting to find the `SALMON_QUANT` process and its command, so we'll want the `name` and `script` columns
-
-```         
-nextflow log thirsty_heisenberg -f name,script
-```
-
-This produces a lot of output, we can see that it has changed to contain the process name and a series of bash commands. However it is a lot to go through when we only care about a single process. So let's filter down the output:
-
-```         
-nextflow log thirsty_heisenberg -f name,script -filter 'name =~ ".*SALMON_QUANT.*"' 
-```
-
-As can be seen in the previous command's output, the process names are very long and there is not an easy way to find it. So we've added the `-filter` flag to reduce down the results. The value we're assigning it is `'name =~ ".*SALMON_QUANT.*"'`. This is a regular expression, which just means we are trying to find a string, we know the structure of the string, but not the exact string. Let's break down the regex a little better:
-
--   The `=~` operator is used when you are performing a regex match.
-
--   `.*SALMON_QUANT.*` is our regex to match against
-
-    -   `.` means any character.
-
-    -   `*` means that the previous character can repeat 0 or more times
-
-        Putting it together, the regex means that we are looking for the string `SALMON_QUANT` and it can appear anywhere in the `name` string.
-
-Running this yields a number of results, but we are able to now validate that we do see the `--gcBias --seqBias` being added to all commands.
-
-Lastly, as the various `work` directories contain other "hidden" files (files starting with a `.`), such as logs and trace files, these files can be reviewed to assist with debugging issues.
-
-# Where to go for help
-
-## Seqera AI
-
-## Slack
+Key results from the `work` directory are copied over to the `outdir` - deleting the work directory may be desired to avoid duplication of files, and minimize storage footprint since it also contains all intermediate files. **However** deleting this directory also removes the log files (the .command.* files) and prevents you from resuming a pipeline execution (with `-resume`). If you do not need to resume a pipeline run, and would like to remove large files from the work directory while keeping the logs, you may clean this directory with the command `nextflow clean -k -f` (before doing so we recommend performing a dry-run prior to this with `nextflow clean -k -n`).
