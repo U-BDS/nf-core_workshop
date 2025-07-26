@@ -11,6 +11,8 @@ navbar:
     href: intro_nextflow_nfcore.html
   - text: "nf-core/rnaseq"
     href: rnaseq.html
+  - text: "Seqera AI"
+    href: seqera_ai.html
   # text: "Additional resources"
   #  href: additional_resources.html
 
