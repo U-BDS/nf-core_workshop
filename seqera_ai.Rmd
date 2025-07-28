@@ -70,7 +70,7 @@ Something to take note of is that the behavior of each platform may slightly dif
 
 For the purposes of this workshops, the example below used the Seqera AI online.
 
-## Writting a custom configuration file
+# Writting a custom configuration file
 
 A key strength of Nextflow, is its high level of modularity. While an in-depth overview of this topic is beyond the scope of this workshop, a common use-case is the ability of over-writing pipeline defaults with a **custom configuration file**.
 
@@ -80,7 +80,7 @@ With that in mind, some common use cases where a custom configuration file is ne
 
 As an example, let's assume that we would like to increase the threads and decrease the memory requirements for the `STAR`. How do you do this? Seqera AI can help:
 
-![Custom config](imgs/seqera_ai_config.png)
+![](imgs/seqera_ai_config.png)
 <br>
 
 > `r fontawesome::fa("triangle-exclamation", fill = "#054f02")` Note that we have specified the version of the pipeline which was used in the example run for this workshop. This specific context can aid the AI in providing more refined answers.
@@ -113,7 +113,7 @@ nextflow run nf-core/rnaseq \
 
 **Importantly** it also provided a great tip - to verify that your modified configuration is actually being applied. Indeed the best approach to do this is check the `STAR` command in this case. With that in mind let's move forward to the next example where AI can also be helpful.
 
-## Navigation of the `work` dir
+# Navigation of the `work` dir
 
 The example above touched on a custom configuration for computational resources. What about tool parameters? The answer is the same as above - you can use the same syntax in a custom configuration file to add tool-specific parameters.
 
@@ -146,7 +146,7 @@ After the run is completed, how can we be certain that this configuration was su
 
 Given the complexity of the `work` directory, let's ask Seqera AI to help us parse through the data:
 
-![Custom config](imgs/seqera_ai_work_dir.png)
+![](imgs/seqera_ai_work_dir.png)
 <br>
 
 The answer provides multiple methods, but method #1 shown above is the best suggestion. Let's try the suggestion from our example run:
@@ -250,9 +250,123 @@ cat <<-END_VERSIONS > versions.yml
 END_VERSIONS
 ```
 
-## Troubleshooting errors
+# Troubleshooting errors
 
-Our pipeline executed successfully. While it would be ideal if every run worked flawlessly, errors are sometimes inevitable. Fortunately, Seqera AI can assist in diagnosing and resolving these issues. Below, we present two example scenarios where we intentionally introduced errors to demonstrate how Seqera AI can help troubleshoot and guide the resolution process.
+Our pipeline executed successfully. While it would be ideal if every run worked flawlessly, errors are sometimes inevitable. Fortunately, Seqera AI can assist in diagnosing and resolving these issues. Below, we present two example scenarios where we **intentionally introduced errors** to demonstrate how Seqera AI can help troubleshoot and guide the resolution process.
 
-<!-- TODO: 2 cases - samplesheet issue? And another could be if we trigger a failure with a tool param? (e.g.: maybe make a typo in a param). -->
+## Case 1
 
+In a new run, we have encountered the following error (this can be seen in `.nextflow.log`):
+
+```
+The following invalid input values have been detected:
+
+* --input (./samplesheet.csv): Validation of file failed:
+        -> Entry 3: Missing required field(s): strandedness
+
+ -- Check script '/home/lianov/.nextflow/assets/nf-core/rnaseq/./workflows/rnaseq/../../subworkflows/local/utils_nfcore_rnaseq_pipeline/../../nf-core/utils_nfschema_plugin/main.nf' at line: 39 or see '.nextflow.log' file for more details
+```
+
+At at first glance this indicates that `strandedness` is missing from our samplesheet. Let's take a look:
+
+```
+sample,fastq_1,fastq_2,strandedness
+N02_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328049_SRR7457560.fastq.gz,,auto
+N01_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328050_SRR7457559.fastq.gz,,auto
+N04_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328051_SRR7457558.fastq.gz,,,auto
+N03_AM_Naive,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328052_SRR7457557.fastq.gz,,auto
+R08_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328047_SRR7457562.fastq.gz,,auto
+R07_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328048_SRR7457561.fastq.gz,,auto
+R06_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328057_SRR7457552.fastq.gz,,auto
+R05_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/fastqs/SRX4328058_SRR7457551.fastq.gz,,auto
+```
+
+As you can see every sample does have `auto` indicated, so what is the issue?
+
+> **Discussion Question**
+>
+> Let's spend a minutes looking over this file to see if you can spot the issue.
+
+Now let's see if Seqera AI can help us as well:
+
+![](imgs/seqera_ai_error_1.png)
+
+By providing the error and the samplesheet, Seqera AI was able to spot the issue right away. It provided an explanation along with the corrected samplesheet.
+
+## Case 2
+
+Let's try another example. In this new run, we are now receiving the following error:
+
+```
+-[nf-core/rnaseq] Pipeline completed with errors-
+ERROR ~ Error executing process > 'NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT (N02_AM_Naive)'
+
+Caused by:
+  Process `NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT (N02_AM_Naive)` terminated with an error exit status (1)
+
+
+Command executed:
+
+  salmon quant \
+      --geneMap gencode.vM32.annotation.filtered.gtf \
+      --threads 6 \
+      --libType=U \
+      --index salmon \
+      -r N02_AM_Naive_trimmed_trimmed.fq.gz \
+      --seqbias --gcbias \
+      -o N02_AM_Naive
+
+  if [ -f N02_AM_Naive/aux_info/meta_info.json ]; then
+      cp N02_AM_Naive/aux_info/meta_info.json "N02_AM_Naive_meta_info.json"
+  fi
+  if [ -f N02_AM_Naive/lib_format_counts.json ]; then
+      cp N02_AM_Naive/lib_format_counts.json "N02_AM_Naive_lib_format_counts.json"
+  fi
+
+  cat <<-END_VERSIONS > versions.yml
+  "NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT":
+      salmon: $(echo $(salmon --version) | sed -e "s/salmon //g")
+  END_VERSIONS
+
+Command exit status:
+  1
+
+Command output:
+  (empty)
+
+Command error:
+  Version Server Response: Not Found
+  (mapping-based mode) Exception : [unrecognised option '--seqbias'].
+  Please be sure you are passing correct options, and that you are running in the intended mode.
+  alignment-based mode is detected and enabled via the '-a' flag. Exiting.
+
+Work dir:
+  /scratch/lianov/nfcore_rnaseq/example_of_error/work/e0/1bb787179e237e56d5bd2d1d38c07b
+
+Tip: view the complete command output by changing to the process work dir and entering the command `cat .command.out`
+```
+
+Let's break this down first, identify the message that points to the error and then see if Seqera AI could have also helped us.
+
+1. The error message block follows a standard format for errors which occurs within a specific process, in this case the process `NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT (N02_AM_Naive)`
+2. We also see that it states exit status 1. This status is a common status indicating that the job was not successful (while exit status 0 indicates success).
+3. It displays the command which the process executed - as we can see this is the `salmon quant` command which compiles the pipeline parameters along with any user-provided changes.
+4. Command error. The `salmon` developers created very user-friendly errors for this type of issue, where it clearly states that `--seqbias` is not an option.
+
+With `--seqbias` identified as the issue, what is the solution? One point to bear in mind is case-sensitivity. `--seqbias` failed because the proper parameter is `--seqBias` (note the capitalized `B`).
+
+_____
+
+Let's see if Seqera AI could have helped us with this error as well:
+
+![](imgs/seqera_ai_error_2_q.png)
+
+![](imgs/seqera_ai_error_2_a.png)
+
+As expected it solved the issue and provided additional helpful information, including:
+
+* `r fontawesome::fa("wrench")` Fixing the second parameter where we also introduced the same typo (**`--gcBias` instead of `--gcbias`**)
+* `r fontawesome::fa("repeat")` Suggested the use of the flag `-resume` which enables Nextflow to start the new pipeline run where it failed (instead of from scratch)
+* `r fontawesome::fa("lightbulb")` Suggested to check for any custom configuration files since configurations in them could be overwriting parameters in the params.yml
+
+It did also suggested to remove these flags since they are not turned on by default. This suggestion is one where each user needs to consider on a case by case basis. Pipeline developers typically set sensitive defaults. But there are instances where enabling non-default parameters is best. **Our recommendation to anyone using nf-core pipelines is to also become familiar with the underlying methods and tools** - this will enable you to make the best decisions for your own data and use cases. After checking the documentation of a tool, if you have questions about specific parameters you can ask Seqera AI for help and/or the nf-core community in Slack for their input. There are also resources available online including the open-source repository for each tool (e.g.: search open/closed issues or discussions).
