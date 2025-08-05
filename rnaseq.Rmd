@@ -35,7 +35,6 @@ pre code {
 }
 </style>
 ```
-
 # Intro to RNA-Seq
 
 > **Discussion Question**
@@ -48,8 +47,7 @@ The rnaseq workflow developed and published by nf-core will be the workflow that
 
 This workflow has a lot of tools that are part of it, and a user may choose to run it in default mode (tools that are executed by default), or configure it to run with more or less tools/steps.
 
-![<https://nf-co.re/rnaseq/3.19.0>](imgs/nf-core-rnaseq_metro_map_grey_animated.svg)
-<br>
+![https://nf-co.re/rnaseq/3.19.0](imgs/nf-core-rnaseq_metro_map_grey_animated.svg) <br>
 
 ------------------------------------------------------------------------
 
@@ -92,19 +90,17 @@ Feature (gene or transcript) quantification is typically the last analytical ste
 
 The count outputs format typically contains a list of features (genes names or IDs) as rows and their relative abundance as columns for each sample:
 
-<div style="width:40%; margin:auto; text-align:center;">
+::: {style="width:40%; margin:auto; text-align:center;"}
+| feature (e.g: genes) | quantified counts per sample\* |
+|:--------------------:|:------------------------------:|
+|       feature1       |              102               |
+|       feature2       |               10               |
+|       feature3       |              502               |
+|       feature4       |               53               |
+|       feature5       |              300               |
+:::
 
-|feature (e.g: genes)|quantified counts per sample*|
-|:----:|:----:|
-|feature1|102|
-|feature2|10|
-|feature3|502|
-|feature4|53|
-|feature5|300|
-
-</div>
-
-**Note***: the exact column names from a quantified matrix will be dependent on the quantifier - but the overall structure above (features by counts) is expected.
+**Note**\*: the exact column names from a quantified matrix will be dependent on the quantifier - but the overall structure above (features by counts) is expected.
 
 ------------------------------------------------------------------------
 
@@ -123,9 +119,13 @@ nf-core pipelines are designed to run seamlessly across a wide range of computin
 Institutional profiles are standardized Nextflow configuration files designed to support community members across various institutions. The use of an institutional profile is enabled via the `-profile` parameter, and it is maintained within the nf-core "configs" GitHub repository: <https://github.com/nf-core/configs>
 
 <br>
+
 <center>
+
 ![<cheaha_profile>](imgs/cheaha_profile.png){width="60%"}
+
 </center>
+
 <br>
 
 The Cheaha UAB institutional profile was created by U-BDS, with detailed documentation at: <https://nf-co.re/configs/cheaha/>. In the demonstration section of this workshop, participants will see that this profile is enabled via the flag: `-profile cheaha`. Enabling this profile, allows users to leverage the full scope of an HPC system and its schedule. The profile automatically defines the executor (Slurm), enables Singularity, auto mounts specific directories in our HPC cluster, and defines partitions based on job resources.
@@ -154,7 +154,6 @@ We'll navigate to the directory where we have moved the input files which will b
 >
 > For this lesson, we'll be using the onDemand Editor provided by UAB Research Computing in order to edit and create files. However, if you are more comfortable using a software editor such as `vim`, `nano` , or `Visual Studio Code`, that is also acceptable.
 
-
 ## Testing the workflow
 
 Every nf-core pipeline is released with a downsampled test profile that allows users to quickly verify the pipeline and its configuration on their system. We strongly encourage users to take advantage of this profile to rule out any technical issues or configuration errors before running full-scale analyses.
@@ -165,7 +164,7 @@ Below is a script which contains the test profile run for the nf-core/rnaseq dat
 >
 > It is considered bad practice to execute any script or command that requires large amounts of resources on the login node of a supercomputer. Not only does it take resources from other users on the login node, but it can cause errors and system failures for the super computer itself, therefore **ALWAYS** ensure you either submit code to the computer OR execute code in an interactive session.
 
-```bash
+``` bash
 #!/usr/bin/env bash
 
 #SBATCH --job-name=rnaseq_test
@@ -187,7 +186,7 @@ nextflow run nf-core/rnaseq -profile test,cheaha -r 3.19.0 --outdir results_test
 
 The script above can be submitted with the following command via the commandline available from OnDemand (or alternatively, via a terminal from your computer if you `ssh` to the cluster):
 
-```bash
+``` bash
 sbatch run_test_rnaseq.sh
 ```
 
@@ -195,7 +194,7 @@ To break down each line:
 
 **All `#SBATCH` lines are Slurm directives for our test job:**
 
--   `#!/usr/bin/env bash`: This is known as a `shebang`. It is standard practice to put this line at the top of any script you make, as it is used by the computer to assist in determing which language the script will be using. In this case we are letting the computer know that this is `bash` script. 
+-   `#!/usr/bin/env bash`: This is known as a `shebang`. It is standard practice to put this line at the top of any script you make, as it is used by the computer to assist in determing which language the script will be using. In this case we are letting the computer know that this is `bash` script.
 -   `--job-name` : Submitting code on the cluster is called a job. The `job-name` flag assigns a user-generated name to the job to allow for easier tracking. Job names should be short and descriptive in order to assist in determining a job. In this case we will be naming out job `rnaseq_test`.
 -   `--output` and `--error` : These are for defining files to place the `stdout` and `stderr` output of the command being submitted. Because these jobs are not interactive, if these flags are not defined, the output will be lost. Instead of providing the direct name to these directives, Slurm provides file name patterns which can be used. For instance, adding `%j_%x.out` and `%j_%x.err` will generate outputs with the following file name pattern: job id and job name.
 -   `--time` : This defines the amount of time you expect a command to run. If a job runs longer than this command, it will be killed by Cheaha.
@@ -243,14 +242,14 @@ Thus, a completed samplesheet (named `samplesheet.csv` in our workshop materials
 ```{=html}
 <pre>
 sample,fastq_1,fastq_2,strandedness
-N02_AM_Naive,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328049_SRR7457560.fastq.gz,,auto
-N01_AM_Naive,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328050_SRR7457559.fastq.gz,,auto
-N04_AM_Naive,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328051_SRR7457558.fastq.gz,,auto
-N03_AM_Naive,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328052_SRR7457557.fastq.gz,,auto
-R08_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328047_SRR7457562.fastq.gz,,auto
-R07_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328048_SRR7457561.fastq.gz,,auto
-R06_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328057_SRR7457552.fastq.gz,,auto
-R05_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328058_SRR7457551.fastq.gz,,auto
+N02_AM_Naive,/data/project/U_BDS/Globus_endpoints/nfcore_workshop/input/fastqs/SRX4328049_SRR7457560.fastq.gz,,auto
+N01_AM_Naive,/data/project/U_BDS/Globus_endpoints/nfcore_workshop/input/fastqs/SRX4328050_SRR7457559.fastq.gz,,auto
+N04_AM_Naive,/data/project/U_BDS/Globus_endpoints/nfcore_workshop/input/fastqs/SRX4328051_SRR7457558.fastq.gz,,auto
+N03_AM_Naive,/data/project/U_BDS/Globus_endpoints/nfcore_workshop/input/fastqs/SRX4328052_SRR7457557.fastq.gz,,auto
+R08_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/nfcore_workshop/input/fastqs/SRX4328047_SRR7457562.fastq.gz,,auto
+R07_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/nfcore_workshop/input/fastqs/SRX4328048_SRR7457561.fastq.gz,,auto
+R06_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/nfcore_workshop/input/fastqs/SRX4328057_SRR7457552.fastq.gz,,auto
+R05_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/nfcore_workshop/input/fastqs/SRX4328058_SRR7457551.fastq.gz,,auto
 
 </pre>
 ```
@@ -266,7 +265,6 @@ To break down each column:
 -   `fastq_1`: Path to the R1 read of the FASTQ file or the single-ended read. Please note that the path above is relative to the U-BDS Globus endpoint which hosts this data. You will need to update the path to the directory contianing the copy of this data (e.g.: your `USER_SCRATCH`)
 -   `fastq_2`: Path to the R2 read of the FASTQ file. For single-ended data, leave this column blank.
 -   `strandedness`: Library strandness. This is linked to the library preparation method implemented. If unknown, indicate `auto` - for auto-detection within the pipeline.
-
 
 > **Discussion Question**
 >
@@ -294,7 +292,7 @@ Parameters are able to be passed as flags to the command line or via a yaml file
 
 For the workshop demonstration, the parameters in our `params.yml` file are:
 
-```yaml        
+``` yaml
 # names/email
 # email: "" # disabled for our demo run
 multiqc_title: "nfcore_rnaseq_demo"
@@ -303,8 +301,8 @@ multiqc_title: "nfcore_rnaseq_demo"
 input: "./samplesheet.csv"
 
 # Genome references
-fasta: "/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/references/GRCm39.primary_assembly.genome.fa"
-gtf: "/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/references/gencode.vM32.annotation.gtf"
+fasta: "/data/project/U_BDS/Globus_endpoints/nfcore_workshop/input/references/GRCm39.primary_assembly.genome.fa"
+gtf: "/data/project/U_BDS/Globus_endpoints/nfcore_workshop/input/references/gencode.vM32.annotation.gtf"
 gencode: true
 
 # Read Trimming Options
@@ -330,15 +328,14 @@ deseq2_vst: true
 -   `extra_trimgalore_args` : arguments within `trimgalore` which can be specified. As an example `--illumina` is `trimgalore` parameter.
 -   `aligner` : Aligner of choice. `star_salmon` indicates the nf-core/rnaseq will execute `STAR` for the alignment, followed by `salmon` for quantification
 -   `pseudo_aligner` : Pseudo-aligner/quasi-mapping of choice. `salmon` indicates that the data will be quasi-mapped and quantified by Salmon.
--   `extra_salmon_quant_args` : arguments within `salmon` which can be specified here.  As an example `--seqBias --gcBias` are `salmon` parameter which we commonly use.
+-   `extra_salmon_quant_args` : arguments within `salmon` which can be specified here. As an example `--seqBias --gcBias` are `salmon` parameter which we commonly use.
 -   `deseq2_vst` : boolean for the implementation of DESeq2's vst transformation over rlog.
-
 
 ## Submitting the workflow
 
 With all configuration related files created, we can now submit the workflow with the `run_rnaseq.sh` script below:
 
-```bash    
+``` bash
 #!/usr/bin/env bash
 
 #SBATCH --job-name=nfcore_rnaseq
@@ -373,10 +370,10 @@ Note that the script above, is similar to how we executed the `test` profile. Th
 
 There are various ways which you can check your running jobs. Here are a few methods that we can check a running job:
 
-1. You can check the standard output and error files (`.out` and `.err`) for logs. They are expected to be updated as the run goes, and if an error occurs, these can be good starting point for troubleshooting.
-2. Regardless of the standard output/error files, Nextflow will always generate a log file named `.nextflow.log` in the current working directory. Note the `.` in front of the file name - thus this is a hidden file that can only be listed from `ls` with the flag `a` (e.g.: `ls -la`).
-3. You may also check the running status of the Nextflow runner's jobs (and the jobs it submits) with the following command: `squeue -u $USER`. This command will list all running jobs, including the Nextflow runner job along with all jobs submitted to the cluster (since we are using the `cheaha` profile).
-4. Slurm job IDs - they can be useful to fetch specific job information. One common command is `seff <job_id>`. The `seff` output provides an overview of the job state and how many resources it used. Another alternative, which can provides a lot more detail is `sacct -j <job_id>`, nothing that `sacct` has wide range of information that can be outputted via the flag `--format`, e.g.: `sacct -j <job_id> --format=JobID,Start,End,Elapsed,NCPUS,NodeList,NTask,Timelimit,ReqMem`. The options to `--format` can be viewed [here](https://slurm.schedmd.com/sacct.html#OPT_helpformat).
+1.  You can check the standard output and error files (`.out` and `.err`) for logs. They are expected to be updated as the run goes, and if an error occurs, these can be good starting point for troubleshooting.
+2.  Regardless of the standard output/error files, Nextflow will always generate a log file named `.nextflow.log` in the current working directory. Note the `.` in front of the file name - thus this is a hidden file that can only be listed from `ls` with the flag `a` (e.g.: `ls -la`).
+3.  You may also check the running status of the Nextflow runner's jobs (and the jobs it submits) with the following command: `squeue -u $USER`. This command will list all running jobs, including the Nextflow runner job along with all jobs submitted to the cluster (since we are using the `cheaha` profile).
+4.  Slurm job IDs - they can be useful to fetch specific job information. One common command is `seff <job_id>`. The `seff` output provides an overview of the job state and how many resources it used. Another alternative, which can provides a lot more detail is `sacct -j <job_id>`, nothing that `sacct` has wide range of information that can be outputted via the flag `--format`, e.g.: `sacct -j <job_id> --format=JobID,Start,End,Elapsed,NCPUS,NodeList,NTask,Timelimit,ReqMem`. The options to `--format` can be viewed [here](https://slurm.schedmd.com/sacct.html#OPT_helpformat).
 
 ------------------------------------------------------------------------
 
@@ -507,4 +504,4 @@ Along with the process outputs, the `work` directory typically contains:
 -   Input files: These are files or symlinks defined as inputs to the process.
 -   Output files: These are files generated by the process as defined by the process.
 
-Key results from the `work` directory are copied over to the `outdir` - deleting the work directory may be desired to avoid duplication of files, and minimize storage footprint since it also contains all intermediate files. **However** deleting this directory also removes the log files (the .command.* files) and prevents you from resuming a pipeline execution (with `-resume`). If you do not need to resume a pipeline run, and would like to remove large files from the work directory while keeping the logs, you may clean this directory with the command `nextflow clean -k -f` (before doing so we recommend performing a dry-run prior to this with `nextflow clean -k -n`).
+Key results from the `work` directory are copied over to the `outdir` - deleting the work directory may be desired to avoid duplication of files, and minimize storage footprint since it also contains all intermediate files. **However** deleting this directory also removes the log files (the .command.\* files) and prevents you from resuming a pipeline execution (with `-resume`). If you do not need to resume a pipeline run, and would like to remove large files from the work directory while keeping the logs, you may clean this directory with the command `nextflow clean -k -f` (before doing so we recommend performing a dry-run prior to this with `nextflow clean -k -n`).
