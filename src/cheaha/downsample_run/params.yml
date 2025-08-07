@@ -6,13 +6,14 @@ multiqc_title: "nfcore_rnaseq_demo"
 input: "./samplesheet.csv"
 
 # Genome references
-fasta: "/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/references/GRCm39.primary_assembly.genome.fa"
-gtf: "/data/project/U_BDS/Globus_endpoints/rnaseq_workshop/input/references/gencode.vM32.annotation.gtf"
+fasta: "/data/project/U_BDS/Globus_endpoints/nfcore_workshop/input/references/GRCm39.primary_assembly.genome.fa"
+gtf: "/data/project/U_BDS/Globus_endpoints/nfcore_workshop/input/references/gencode.vM32.annotation.gtf"
 gencode: true
 
 # Read Trimming Options
 trimmer: "trimgalore"
 extra_trimgalore_args: "--illumina"
+min_trimmed_reads: 1
 
 # Alignment Options
 aligner: "star_salmon"
