@@ -42,10 +42,15 @@ A container is a packaged up snapshot of code (or software) and all of its depen
 It is highly recommended that any code or analysis that is meant to be shared should be encapsulated in a container as that will help in increasing the reproducibility of your work.
 
 ## Nextflow
+
 <br>
+
 <center>
+
 ![<nextflow>](imgs/nextflow-logo-bg-light.png){width="50%"}
+
 </center>
+
 <br>
 
 While there are many WfMS, the topic of this lesson is **Nextflow**. Nextflow is a workflow management system that is written using the dataflow programming model. Dataflow Programming means that each step in your workflow definition, waits until it receives input from an upstream step, does work, and then sends outputs to a downstream step. Programming in this way helps ensure that Nextflow is able to run steps in parallel and have data at various states in the workflow until it completes.
@@ -65,13 +70,18 @@ While this lesson does not cover developing Nextflow workflows, there are some a
 Importantly, Nextflow is supported across all major platforms, including but not limited to cloud computing (e.g.: AWS) and High Performance Computing (HPC) such as UAB's HPC system (Cheaha).
 
 ## nf-core
-<br>
-<center>
-![<nf-core>](imgs/nf-core-logo.png){width="50%"}
-</center>
+
 <br>
 
-nf-core is a global community-led effort to curate and develop analytical workflows using Nextflow. All workflows published as part of nf-core are open source and there are a wide range of workflows published currently supporting analyses such as single-cell or ATAC-seq. The community itself is not specifically limited to bioinformatics, but most workflows published so far have all been within this domain. One point to be noted, is that the nf-core team has published standards and tools to create a styling guidelines for nf-core pipelines. However, any Nextflow workflow is able to use these standards and tools even if they do not wish to publish as part of nf-core. 
+<center>
+
+![<nf-core>](imgs/nf-core-logo.png){width="50%"}
+
+</center>
+
+<br>
+
+nf-core is a global community-led effort to curate and develop analytical workflows using Nextflow. All workflows published as part of nf-core are open source and there are a wide range of workflows published currently supporting analyses such as single-cell or ATAC-seq. The community itself is not specifically limited to bioinformatics, but most workflows published so far have all been within this domain. One point to be noted, is that the nf-core team has published standards and tools to create a styling guidelines for nf-core pipelines. However, any Nextflow workflow is able to use these standards and tools even if they do not wish to publish as part of nf-core.
 
 **Available workflows** To view a list of all workflows (released and in development), please visit <https://nf-co.re/workflows>.
 
@@ -79,13 +89,9 @@ nf-core is a global community-led effort to curate and develop analytical workfl
 
 Beyond being a hub of computational workflow, a critical strength from nf-core lies in its actively engaged community and resources. Instructions on gaining access to the following resources is available at: <https://nf-co.re/join>
 
-* **Community engagement** nf-core has various avenues of engagement, including but not limited to:
-  * **Slack** this is a vast resource for the community to ask questions or search history for previously discussed topics. Each pipeline has its own channel. In additional there are additional channels for more general questions, along with channel dedicated towards pipeline development needs.
-  * **YouTube** nf-core's channel includes a wide-variety of topics including training materials. Importantly, Nextflow also contains its own YouTube channel which is a great complement to the teaching materials available online.
-  * **Bytesizes talks** linked to the above from the YouTube channel, nf-core runs a series of bytesizes talks, which can be browsed directly from YouTube or from <https://nf-co.re/events/bytesize>
-  * **Training events** be on the look out for training opportunities. nf-core's scheduled can be seen at: <https://nf-co.re/events/training>
-  * **Hackathons** if you would like to get started with pipeline development, or maintance, a great opportunity is the nf-core hosted hackthons: <https://nf-co.re/events/hackathon>
-  
-
-
-
+-   **Community engagement** nf-core has various avenues of engagement, including but not limited to:
+    -   **Slack** this is a vast resource for the community to ask questions or search history for previously discussed topics. Each pipeline has its own channel. In additional there are additional channels for more general questions, along with channel dedicated towards pipeline development needs.
+    -   **YouTube** nf-core's channel includes a wide-variety of topics including training materials. Importantly, Nextflow also contains its own YouTube channel which is a great complement to the teaching materials available online.
+    -   **Bytesizes talks** linked to the above from the YouTube channel, nf-core runs a series of bytesizes talks, which can be browsed directly from YouTube or from <https://nf-co.re/events/bytesize>
+    -   **Training events** be on the look out for training opportunities. nf-core's scheduled can be seen at: <https://nf-co.re/events/training>
+    -   **Hackathons** if you would like to get started with pipeline development, or maintance, a great opportunity is the nf-core hosted hackthons: <https://nf-co.re/events/hackathon>

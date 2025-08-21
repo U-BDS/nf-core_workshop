@@ -41,7 +41,7 @@ with nf-core:
     -   Reviewing Nextflow's working directories and logs
 -   Seqera AI
 
-# Authors and Instructors:
+# Authors and Instructors
 
 -   Austyn Trull
 -   Lara Ianov, PhD
