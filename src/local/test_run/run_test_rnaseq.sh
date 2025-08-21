@@ -2,6 +2,7 @@
 
 # prep your environment
 # note that conda environment creation is listed in install instructions
+conda init
 conda activate nfcore_workshop
 
 # run test profile
