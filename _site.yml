@@ -5,16 +5,14 @@ navbar:
   left:
   - text: "Home"
     href: index.html
-  #- text: "Install instructions"
-  #  href: installation.html
+  - text: "Install instructions"
+    href: installation.html
   - text: "Nextflow and nf-core"
     href: intro_nextflow_nfcore.html
   - text: "nf-core/rnaseq"
     href: rnaseq.html
   - text: "Seqera AI"
     href: seqera_ai.html
-  # text: "Additional resources"
-  #  href: additional_resources.html
 
 output:
   html_document:

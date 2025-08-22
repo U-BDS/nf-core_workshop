@@ -112,7 +112,7 @@ As discussed earlier, the workflow we will cover also contains several additiona
 
 ## Compute resources
 
-nf-core pipelines are designed to run seamlessly across a wide range of computing environments — from local computers to HPC systems and cloud platforms. At UAB, researchers and trainees have access to Cheaha, our dedicated HPC cluster, which offers significantly greater computational power than a typical local computer In this workshop, we will demonstrate how to execute an nf-core pipeline within the Cheaha environment, showcasing the benefits of leveraging HPC resources for large-scale bioinformatics analyses.
+nf-core pipelines are designed to run seamlessly across a wide range of computing environments — from local computers to HPC systems and cloud platforms. At UAB, researchers and trainees have access to Cheaha, our dedicated HPC cluster, which offers significantly greater computational power than a typical local computer. In this workshop, we will demonstrate how to execute an nf-core pipeline within the Cheaha environment, showcasing the benefits of leveraging HPC resources for large-scale bioinformatics analyses.
 
 ### Institutional profiles
 

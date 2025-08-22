@@ -1,6 +1,6 @@
 ---
 title: "Installation instructions"
-author: "Austyn Trull, Bharat Mishra, Ph.D., Lara Ianov, Ph.D."
+author: "Austyn Trull, Lara Ianov, Ph.D."
 ---
 
 If you wish to try and perform the steps illustrated in this tutorial, you'll need to follow all the instructions below to setup the
@@ -66,7 +66,7 @@ The data being used for the workshop comes from the paper below:
 
 <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6096346/>
 
-For this workshop, the data has been pre-downloaded and packaged into a Globus endpoint for ease of transfer. The link for the Globus endpoint can be found [here](https://app.globus.org/file-manager?origin_id=c8838c0b-c94c-4970-9194-c32f20911e28&origin_path=%2F)
+For this workshop, the data has been pre-downloaded and packaged into a Globus endpoint for ease of transfer. The link for the Globus endpoint can be found [here](https://app.globus.org/file-manager?origin_id=6ab05d0a-1adc-412f-9257-2a4a1e2f0131&origin_path=%2F)
 
 If you have never logged into the Globus account, please see the instructions [here](#globus_account)
 
@@ -80,7 +80,7 @@ In order to download the data, perform the following steps:
 5.  In the 'Path' text box type `/scratch/your_blazerid` where `your_blazerid` is your blazer id
 6.  Towards the middle, click the 'New Folder' button and type `nfcore_workshop`.
     -   This will create a new folder names 'nfcore_workshop' in your scratch space
-7.  Double click the 'nf-cre_workshop' folder to go inside of it
+7.  Double click the 'nfcore_workshop' folder to go inside of it
 8.  In the right pane, click the 'Collection' text box
 9.  Search for 'nfcore_workshop_data'
 10. In the right pane, click the checkboxes beside the 'input' and 'results' folder that have appeared
@@ -97,7 +97,7 @@ In order to use Visual Studio Code (VSCode) with Cheaha, please follow the instr
 # Install Nextflow Extension for VSCode {#install_vscode_nf_ext}
 
 1.  Open up the "Visual Studio Code" application you installed in the instructions [here](#install_vscode)
-2.  Connect to the code tunnel you are running on Cheaha (instructions on how to create and use a tunnel are [here](#install_vscode))
+2.  Connect to the code tunnel you are running on Cheaha (instructions on how to create and use a tunnel are noted in the link above).
 3.  On the left side menu, click the "Extensions" icon. The icon appears as four squares.
 4.  In the search bar of the Extensions view, type "Nextflow".
 5.  Locate the "Nextflow" search result. Its named "Nextflow" and is published by "Nextflow" (which you can tell by the blue checkmark next to the publisher).

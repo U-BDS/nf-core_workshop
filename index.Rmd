@@ -71,8 +71,7 @@ implement in our workshop:
     10.1165/rcmb.2017-0430TR. PMID: 29624415; PMCID: PMC6096346.
 
 Lastly, we would also like to thank Kristen Coutinho and the UAB
-Informatics Club for the dataset suggestion, and preliminary discussions
-for this workshop.
+Informatics Club for the dataset suggestion.
 
 # Citation
 
