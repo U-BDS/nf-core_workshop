@@ -1,4 +1,4 @@
-# nf-core_workshop
+# Introduction to Bioinformatics Workflows with nf-core
 
 Recent advances in bioinformatics, computational biology, and the ever-growing scale of omics datasets have created an urgent need for efficient, reproducible, and scalable data processing that aligns with FAIR (Findable, Accessible, Interoperable, and Reusable) principles. nf-core addresses this need by providing a rich collection of community-curated, best-practice pipelines for secondary analysis across a wide range of omics domains. By leveraging nf-core, researchers can streamline complex analyses, ensure reproducibility, and focus more on biological insights rather than computational overhead.
 
@@ -32,7 +32,8 @@ Sections of the teaching material for this workshop, contains materials which ha
 
 We would also like to thank the following groups for support:
 
--   UAB's Research Computing (HPC resources) <!-- TODO:  If we receive support from Ambassador program, reminder to acknowledge it here -->
+-   UAB's Research Computing (HPC resources)
+-   Nextflow Ambassador program
 
 We would also like to thank the authors of the dataset which we implement in our workshop:
 
