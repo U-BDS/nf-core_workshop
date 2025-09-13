@@ -19,7 +19,7 @@ Sections of the teaching material for this workshop, contains materials which ha
 
 # Introduction to Workflow Automation
 
-Analyzing data, regardless of the domain, involves executing a sequence of computational steps in order to clean and process the data into a format that's easier to interpret. This sequence of steps is called a **workflow**. Traditionally, steps withing a workflow have been chained together using languages like Bash or Perl, however as workflows have grown more complex, the need for more sophisticated features to help manage and execute each step in a workflow has increased.
+Analyzing data, regardless of the domain, involves executing a sequence of computational steps in order to clean and process the data into a format that's easier to interpret. This sequence of steps is called a **workflow**. Traditionally, steps within a workflow have been chained together using languages like Bash or Perl, however as workflows have grown more complex, the need for more sophisticated features to help manage and execute each step in a workflow has increased.
 
 ## Workflow Management Systems
 
