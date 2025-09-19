@@ -66,7 +66,7 @@ The data being used for the workshop comes from the paper below:
 
 <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6096346/>
 
-For this workshop, the data has been pre-downloaded and packaged into a Globus endpoint for ease of transfer. The link for the Globus endpoint can be found [here](https://app.globus.org/file-manager?origin_id=6ab05d0a-1adc-412f-9257-2a4a1e2f0131&origin_path=%2F)
+For this workshop, the data has been pre-downloaded and packaged into a Globus endpoint for ease of transfer. The link for the Globus endpoint can be found [here](https://app.globus.org/file-manager?origin_id=57bb7931-f4ab-4de0-a868-bc086b300e79&origin_path=%2F)
 
 If you have never logged into the Globus account, please see the instructions [here](#globus_account)
 
