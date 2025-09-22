@@ -1,0 +1,23 @@
+# names/email
+# email: "" # disabled for our demo run
+multiqc_title: "nfcore_rnaseq_demo"
+
+# input samplesheet
+input: "./samplesheet.csv"
+
+# Genome references
+fasta: "/data/project/U_BDS/Globus_endpoints/nfcore_workshop/input/references/GRCm39.primary_assembly.genome.fa"
+gtf: "/data/project/U_BDS/Globus_endpoints/nfcore_workshop/input/references/gencode.vM32.annotation.gtf"
+gencode: true
+
+# Read Trimming Options
+trimmer: "trimgalore"
+extra_trimgalore_args: "--illumina"
+
+# Alignment Options
+aligner: "star_salmon"
+pseudo_aligner: "salmon"
+extra_salmon_quant_args: "--seqBias --gcBias"
+
+# Quality Control
+deseq2_vst: true

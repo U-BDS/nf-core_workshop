@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Austyn Trull, Lara Ianov, Ph.D." />
+
+
+<title>Nextflow and nf-core</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Bioinformatics with nf-core</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="installation.html">Install instructions</a>
+</li>
+<li>
+  <a href="intro_nextflow_nfcore.html">Nextflow and nf-core</a>
+</li>
+<li>
+  <a href="rnaseq.html">nf-core/rnaseq</a>
+</li>
+<li>
+  <a href="seqera_ai.html">Seqera AI</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Nextflow and nf-core</h1>
+<h4 class="author">Austyn Trull, Lara Ianov, Ph.D.</h4>
+
+</div>
+
+
+<!-- Add some CSS for horizontal scrolling in samplesheet blocks -->
+<style>
+  .scrollable-horizontal {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+</style>
+<p>Sections of the teaching material for this workshop, contains
+materials which have been adapted or modified from the following sources
+<em>(we thank the curators and maintainers of all of these resources for
+their wonderful contributions, compiling easy to follow training for
+beginners)</em>:</p>
+<ul>
+<li>Beta phase of carpentries material: <a
+href="https://carpentries-incubator.github.io/workflows-nextflow/"
+class="uri">https://carpentries-incubator.github.io/workflows-nextflow/</a></li>
+</ul>
+<div id="introduction-to-workflow-automation" class="section level1">
+<h1>Introduction to Workflow Automation</h1>
+<p>Analyzing data, regardless of the domain, involves executing a
+sequence of computational steps in order to clean and process the data
+into a format that’s easier to interpret. This sequence of steps is
+called a <strong>workflow</strong>. Traditionally, steps withing a
+workflow have been chained together using languages like Bash or Perl,
+however as workflows have grown more complex, the need for more
+sophisticated features to help manage and execute each step in a
+workflow has increased.</p>
+<div id="workflow-management-systems" class="section level2">
+<h2>Workflow Management Systems</h2>
+<p><strong>Workflow Management Systems (WfMS)</strong>, such as
+Snakemake, Nextflow, and WDL, were developed to help handle the growing
+complex needs of computational workflows. These systems come with
+multiple features to simplify execution of a workflow:</p>
+<ul>
+<li><p><strong>Environment Management &amp; Portability</strong>: WfMS
+possess native support for containerization tools, such as
+<em>Singularity</em> and <em>Docker</em>, allowing users to define
+environments for the entire workflow or for individual tools, helping
+ensure reproducible results across various compute systems.</p></li>
+<li><p><strong>Re-entrancy:</strong> WfMS allow users to restart
+workflows at points other than the first step. This ensures that if the
+workflow fails, restarting the workflow will begin at the step that
+failed rather than restarting from the beginning. This is normally
+internally done by the WfMS by keeping track of what files each step
+uses as input and which files should be produced as output, and
+evaluating that against what files have been generated.</p></li>
+<li><p><strong>Monitoring &amp; Management</strong>: WfMS allow users to
+monitor workflows as they are processing, providing users information
+about steps as they execute. Additionally, WfMS typically provide logs
+of the behavior as the workflow executes, allowing users to review
+in-depth information from each step of the workflow.</p></li>
+<li><p><strong>Parellization &amp; Scalability</strong>: WfMS provide
+ways for steps to be split up so they may run in parallel as well as in
+sequence, allowing for workflows to run much faster than if each step
+was run sequentially.</p></li>
+</ul>
+<div id="workflows-and-reproducibility" class="section level4">
+<h4>Workflows and Reproducibility</h4>
+<p>As mentioned previously, one of the important benefits of using
+workflow management systems is reproducibility. By ensuring that
+analyses are reproducible, you or any other person is able to run a
+workflow and receive the exact same results. One of the ways that WfMS
+ensure reproducibility (as well as portability) is via native support
+for tools that utilize containers, such as Docker or Singularity.</p>
+<p>A container is a packaged up snapshot of code (or software) and all
+of its dependencies. A container allows the application it encapsulates
+to run on any machine afterwards. Containers help with the automation of
+installing all the packages and dependencies and minimizes the chance
+for error and deviation during the installation process.</p>
+<p>It is highly recommended that any code or analysis that is meant to
+be shared should be encapsulated in a container as that will help in
+increasing the reproducibility of your work.</p>
+</div>
+</div>
+<div id="nextflow" class="section level2">
+<h2>Nextflow</h2>
+<p><br></p>
+<center>
+<div class="float">
+<img src="imgs/nextflow-logo-bg-light.png" style="width:50.0%" alt="" />
+<div class="figcaption"><nextflow></div>
+</div>
+</center>
+<p><br></p>
+<p>While there are many WfMS, the topic of this lesson is
+<strong>Nextflow</strong>. Nextflow is a workflow management system that
+is written using the dataflow programming model. Dataflow Programming
+means that each step in your workflow definition, waits until it
+receives input from an upstream step, does work, and then sends outputs
+to a downstream step. Programming in this way helps ensure that Nextflow
+is able to run steps in parallel and have data at various states in the
+workflow until it completes.</p>
+<p>While this lesson does not cover developing Nextflow workflows, there
+are some aspects and definitions that are important to know:</p>
+<ul>
+<li><p>Nextflow is built on top of a programming language known as
+Groovy. Groovy is an object-oriented language that runs on the Java
+Virtual Machine (JVM) and its syntax looks very similar to
+Java.</p></li>
+<li><p>Nextflow workflows are composed of three main parts:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Workflows</strong> is the definition of the series of
+steps to complete an analysis, containing all the interaction between
+processes and channels, as well as any additional or custom
+implementation needed for the analysis.</p></li>
+<li><p><strong>Channels</strong> contain data produced by processes.
+Channels will asynchronously accumulate output from one process and pass
+it as input to a downstream process as soon as data completes. Due to
+the way channels are implemented, this allows for datasets to be in
+various states of analysis even if they all had the same starting
+point.</p></li>
+<li><p><strong>Processes</strong> describe the step to be executed,
+often in script form. Process scripts can be written in any language
+that can be executed by the Linux platform (Bash, Perl, Python, R, Java,
+etc.). Processes define the expected inputs and outputs for a step, and
+spawn a process task for each complete input set. Importantly, each
+process task is fully independent and isolated, meaning it cannot
+interact with its sibling tasks.</p></li>
+</ol></li>
+</ul>
+<p>Importantly, Nextflow is supported across all major platforms,
+including but not limited to cloud computing (e.g.: AWS) and High
+Performance Computing (HPC) such as UAB’s HPC system (Cheaha).</p>
+</div>
+<div id="nf-core" class="section level2">
+<h2>nf-core</h2>
+<p><br></p>
+<center>
+<div class="float">
+<img src="imgs/nf-core-logo.png" style="width:50.0%" alt="" />
+<div class="figcaption"><nf-core></div>
+</div>
+</center>
+<p><br></p>
+<p>nf-core is a global community-led effort to curate and develop
+analytical workflows using Nextflow. All workflows published as part of
+nf-core are open source and there are a wide range of workflows
+published currently supporting analyses such as single-cell or ATAC-seq.
+The community itself is not specifically limited to bioinformatics, but
+most workflows published so far have all been within this domain. One
+point to be noted, is that the nf-core team has published standards and
+tools to create a styling guidelines for nf-core pipelines. However, any
+Nextflow workflow is able to use these standards and tools even if they
+do not wish to publish as part of nf-core.</p>
+<p><strong>Available workflows</strong> To view a list of all workflows
+(released and in development), please visit <a
+href="https://nf-co.re/workflows"
+class="uri">https://nf-co.re/workflows</a>.</p>
+<div id="nf-core-resources" class="section level3">
+<h3>nf-core resources</h3>
+<p>Beyond being a hub of computational workflow, a critical strength
+from nf-core lies in its actively engaged community and resources.
+Instructions on gaining access to the following resources is available
+at: <a href="https://nf-co.re/join"
+class="uri">https://nf-co.re/join</a></p>
+<ul>
+<li><strong>Community engagement</strong> nf-core has various avenues of
+engagement, including but not limited to:
+<ul>
+<li><strong>Slack</strong> this is a vast resource for the community to
+ask questions or search history for previously discussed topics. Each
+pipeline has its own channel. In additional there are additional
+channels for more general questions, along with channel dedicated
+towards pipeline development needs.</li>
+<li><strong>YouTube</strong> nf-core’s channel includes a wide-variety
+of topics including training materials. Importantly, Nextflow also
+contains its own YouTube channel which is a great complement to the
+teaching materials available online.</li>
+<li><strong>Bytesizes talks</strong> linked to the above from the
+YouTube channel, nf-core runs a series of bytesizes talks, which can be
+browsed directly from YouTube or from <a
+href="https://nf-co.re/events/bytesize"
+class="uri">https://nf-co.re/events/bytesize</a></li>
+<li><strong>Training events</strong> be on the look out for training
+opportunities. nf-core’s scheduled can be seen at: <a
+href="https://nf-co.re/events/training"
+class="uri">https://nf-co.re/events/training</a></li>
+<li><strong>Hackathons</strong> if you would like to get started with
+pipeline development, or maintance, a great opportunity is the nf-core
+hosted hackthons: <a href="https://nf-co.re/events/hackathon"
+class="uri">https://nf-co.re/events/hackathon</a></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

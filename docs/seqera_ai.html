@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Austyn Trull, Lara Ianov, Ph.D." />
+
+
+<title>Seqera AI</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Bioinformatics with nf-core</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="installation.html">Install instructions</a>
+</li>
+<li>
+  <a href="intro_nextflow_nfcore.html">Nextflow and nf-core</a>
+</li>
+<li>
+  <a href="rnaseq.html">nf-core/rnaseq</a>
+</li>
+<li>
+  <a href="seqera_ai.html">Seqera AI</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Seqera AI</h1>
+<h4 class="author">Austyn Trull, Lara Ianov, Ph.D.</h4>
+
+</div>
+
+
+<!-- Add some CSS for horizontal scrolling in samplesheet blocks -->
+<style>
+  .scrollable-horizontal {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+pre {
+  background: none !important;
+  border: none !important;
+  overflow-x: auto;
+  padding: 0; /* Let inner code handle padding */
+  margin: 1em 0;
+}
+
+pre code {
+  background: #f8f8f8 !important;
+  display: inline-block;
+  min-width: 100%;
+  white-space: pre;
+  padding: 1em;
+  border: 1px solid #ddd;   /* border now follows scrollable area */
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+</style>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<blockquote>
+<p><strong>Discussion Question</strong></p>
+<p>How many of you have used AI to aid you in learning bioinformatics?
+What are some pros and cons?</p>
+</blockquote>
+<p>Seqera AI is a bioinformatics-focused assistant designed for all
+stages of Nextflow development. Unlike general AI coding tools, it’s
+tightly integrated with Nextflow best practices and nf-core standards.
+It can suggest validated pipelines, generate DSL2-compliant Nextflow
+code, execute tests, help users troubleshoot error messages and much
+more.</p>
+<p>Currently Seqera AI can be used in two ways: 1. Through the online
+platform, <a href="https://seqera.io/ask-ai/chat"
+class="uri">https://seqera.io/ask-ai/chat</a> (note that the free
+version is limited to 100 chats per month) 2. Through the <a
+href="https://marketplace.visualstudio.com/items?itemName=nextflow.nextflow">Nextflow
+VS Code extension</a>.</p>
+<p>Here is a brief summary of some common use cases for each AI
+platform:</p>
+<p><strong>Seqera AI online</strong></p>
+<ul>
+<li>Full-featured web environment for pipeline exploration and initial
+development (including connection to pipelines hosted in GitHub)</li>
+<li>Ability to test code snippets and validate pipeline components</li>
+<li>SRA dataset search with natural language queries</li>
+</ul>
+<p><strong>Nextflow VS Code Extension</strong></p>
+<ul>
+<li>Provides IDE-native experience which can facilitate in-depth
+pipeline development</li>
+<li>Real-time support for coding</li>
+<li>Direct access to log files and terminal outputs can enhance
+debugging</li>
+</ul>
+<p>A more in-depth overview can be found at the following links:</p>
+<ul>
+<li><a
+href="https://seqera.io/blog/legacy-scripts-to-nextflow-seqera-ai/"
+class="uri">https://seqera.io/blog/legacy-scripts-to-nextflow-seqera-ai/</a></li>
+<li><a href="https://seqera.io/blog/seqera-ai--nextflow-vs-code/"
+class="uri">https://seqera.io/blog/seqera-ai--nextflow-vs-code/</a></li>
+</ul>
+<p>Something to take note of is that the behavior of each platform may
+slightly differ. We find that the online platform is great for more
+in-depth answers, learning, exploration and understanding concepts,
+while the VS Code extension is better for context-specific support
+during active development. Therefore, they complement each other.</p>
+<p>For the purposes of this workshops, the example below used the Seqera
+AI online.</p>
+</div>
+<div id="writting-a-custom-configuration-file" class="section level1">
+<h1>Writting a custom configuration file</h1>
+<p>A key strength of Nextflow, is its high level of modularity. While an
+in-depth overview of this topic is beyond the scope of this workshop, a
+common use-case is the ability of over-writing pipeline defaults with a
+<strong>custom configuration file</strong>.</p>
+<p>An example of a custom configuration file which has already been used
+in our example run is the <code>cheaha</code> profile. The key
+distinction between an institutional profile and a custom configuration
+file lies in how they are managed and accessed. Institutional profiles
+are centrally hosted and maintained, making them easily accessible as
+shared resources. They are enabled using the <code>-profile</code> flag.
+In contrast, custom configuration files are local to the user’s
+environment and must be explicitly provided with the <code>-c</code>
+flag. Essentially, institutional profiles simplify access and ensure
+consistency across users, while custom configs offer flexibility for
+local customization.</p>
+<p>With that in mind, some common use cases where a custom configuration
+file is needed includes request for increased computational resources
+and/or custom parameters for the underlying tools of the pipeline.</p>
+<p>As an example, let’s assume that we would like to increase the
+threads and decrease the memory requirements for the <code>STAR</code>.
+How do you do this? Seqera AI can help:</p>
+<p><img src="imgs/seqera_ai_config.png" /> <br></p>
+<blockquote>
+<p><svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#054f02;overflow:visible;position:relative;"><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24V296c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>
+Note that we have specified the version of the pipeline which was used
+in the example run for this workshop. This specific context can aid the
+AI in providing more refined answers.</p>
+</blockquote>
+<p>The answer provided a detailed description, and an alternative
+approach should method 1 not work. It also provided a sample run
+command, but to adapt the answer to our <code>run_rnaseq.sh</code>, you
+would need to simply include the <code>-c custom.config</code> to our
+existing script:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co">#SBATCH --job-name=nfcore_rnaseq</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#SBATCH --output=nfcore_rnaseq.out</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#SBATCH --error=nfcore_rnaseq.err</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#SBATCH --time=12:00:00</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#SBATCH --partition=short</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#SBATCH --mem-per-cpu=5000</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#SBATCH --cpus-per-task=1</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co"># load environment</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="ex">module</span> load Anaconda3</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="ex">conda</span> activate <span class="va">$USER_SCRATCH</span>/conda_envs/nfcore_workshop</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co"># run workflow</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="ex">nextflow</span> run nf-core/rnaseq <span class="dt">\</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>    <span class="at">--outdir</span> ./results <span class="dt">\</span></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>    <span class="at">-profile</span> cheaha <span class="dt">\</span></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>    <span class="at">-r</span> 3.19.0 <span class="dt">\</span></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>    <span class="at">-params-file</span> ./params.yml <span class="dt">\</span></span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>    <span class="at">-c</span> custom.config <span class="co">## custom config</span></span></code></pre></div>
+<p><strong>Importantly</strong> it also provided a great tip - to verify
+that your modified configuration is actually being applied. Indeed the
+best approach to do this is check the <code>STAR</code> command in this
+case. With that in mind let’s move forward to the next example where AI
+can also be helpful.</p>
+</div>
+<div id="navigation-of-the-work-dir" class="section level1">
+<h1>Navigation of the <code>work</code> dir</h1>
+<p>The example above touched on a custom configuration for computational
+resources. What about tool parameters? The answer is the same as above -
+you can use the same syntax in a custom configuration file to add
+tool-specific parameters.</p>
+<p>Notably, nf-core/rnaseq is nf-core’s most matured pipeline. As such,
+the developers have already made adding tool-specific parameters very
+straight-forward and we have already implemented them in our test run by
+including the following:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">extra_trimgalore_args</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;--illumina&quot;</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">extra_salmon_quant_args</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;--seqBias --gcBias&quot;</span></span></code></pre></div>
+<p>Importantly, this did not become an option until versions &gt;= 3.10.
+So what would you do if the pipeline did not have these
+<code>extra</code> params (which is very common across many other
+nf-core pipelines)? Once again, the <code>custom.config</code> file
+would be the solution, e.g.:</p>
+<pre><code>process {
+    // Salmon post STAR alignment
+    withName: &#39;NFCORE_RNASEQ:RNASEQ:QUANTIFY_STAR_SALMON:SALMON_QUANT&#39; {
+        ext.args = &#39;--gcBias --seqBias&#39;
+    }
+    
+    // Salmon in quasi-mapping mode
+    withName: &#39;NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT&#39; {
+        ext.args = &#39;--gcBias --seqBias&#39;
+    }
+}</code></pre>
+<hr />
+<p>After the run is completed, how can we be certain that this
+configuration was successful? While there are a couple of locations
+which you can find the command for a process, we find that checking the
+<code>work</code> directory is best since it also contains tool-specific
+logs along with Nextflow’s <code>.command.sh</code> file. Navigating
+this directory can be also very useful for troubleshooting or output
+exploration.</p>
+<p>Given the complexity of the <code>work</code> directory, let’s ask
+Seqera AI to help us parse through the data:</p>
+<p><img src="imgs/seqera_ai_work_dir.png" /> <br></p>
+<p>The answer provides multiple methods, but method #1 shown above is
+the best suggestion. Let’s try the suggestion from our example run:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="ex">nextflow</span> log</span></code></pre></div>
+<pre><code>TIMESTAMP           DURATION    RUN NAME            STATUS  REVISION ID SESSION ID                              COMMAND
+2025-07-24 16:57:32 2h 36m 3s   irreverent_lovelace OK      0bb032c1e3  db1ce7d9-5e40-4205-98cc-8d06ceed6183    nextflow run nf-core/rnaseq --outdir ./results -profile cheaha -r 3.19.0 -params-file ./params.yml</code></pre>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">nextflow</span> log irreverent_lovelace <span class="at">-f</span> hash,name,status,workdir <span class="kw">|</span> <span class="fu">grep</span> <span class="st">&quot;SALMON_QUANT&quot;</span></span></code></pre></div>
+<p>The output displays all <code>SALMON_QUANT</code> <code>work</code>
+directories. The ones which we would want to explore are linked to the
+aligment or quasi-mapping jobs (<code>QUANTIFY_STAR_SALMON</code>,
+<code>QUANTIFY_PSEUDO_ALIGNMENT</code>):</p>
+<pre><code>e4/77fd58   NFCORE_RNASEQ:RNASEQ:FASTQ_QC_TRIM_FILTER_SETSTRANDEDNESS:FASTQ_SUBSAMPLE_FQ_SALMON:SALMON_QUANT (N01_AM_Naive) COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/e4/77fd581558c8d74aa9574f4660d815
+8a/c60514   NFCORE_RNASEQ:RNASEQ:FASTQ_QC_TRIM_FILTER_SETSTRANDEDNESS:FASTQ_SUBSAMPLE_FQ_SALMON:SALMON_QUANT (N04_AM_Naive) COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/8a/c605145ac7afdd4e329d8f3732c1c1
+23/591642   NFCORE_RNASEQ:RNASEQ:FASTQ_QC_TRIM_FILTER_SETSTRANDEDNESS:FASTQ_SUBSAMPLE_FQ_SALMON:SALMON_QUANT (R07_AM_Allo24h)   COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/23/591642d9b26fbd9555d290ad7b99df
+a6/b0920b   NFCORE_RNASEQ:RNASEQ:FASTQ_QC_TRIM_FILTER_SETSTRANDEDNESS:FASTQ_SUBSAMPLE_FQ_SALMON:SALMON_QUANT (N02_AM_Naive) COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/a6/b0920b19805b7b7bd5550668e81237
+72/7691b6   NFCORE_RNASEQ:RNASEQ:FASTQ_QC_TRIM_FILTER_SETSTRANDEDNESS:FASTQ_SUBSAMPLE_FQ_SALMON:SALMON_QUANT (N03_AM_Naive) COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/72/7691b695a7c26eb55e7c1474615255
+2f/cedf73   NFCORE_RNASEQ:RNASEQ:FASTQ_QC_TRIM_FILTER_SETSTRANDEDNESS:FASTQ_SUBSAMPLE_FQ_SALMON:SALMON_QUANT (R08_AM_Allo24h)   COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/2f/cedf7322607bb5ba42497733fd8171
+cd/783419   NFCORE_RNASEQ:RNASEQ:FASTQ_QC_TRIM_FILTER_SETSTRANDEDNESS:FASTQ_SUBSAMPLE_FQ_SALMON:SALMON_QUANT (R06_AM_Allo24h)   COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/cd/7834197d28fa8b1fe51ac9657bd9fd
+8e/7c2a24   NFCORE_RNASEQ:RNASEQ:FASTQ_QC_TRIM_FILTER_SETSTRANDEDNESS:FASTQ_SUBSAMPLE_FQ_SALMON:SALMON_QUANT (R05_AM_Allo24h)   COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/8e/7c2a2475d31255e520892cbab6d929
+5c/360f85   NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT (N01_AM_Naive)  COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/5c/360f85ae4c26c50f6a7f9d20729eda
+98/b0c9bd   NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT (R07_AM_Allo24h)    COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/98/b0c9bde47b876e6c3b9d499b045f94
+72/bacb86   NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT (N04_AM_Naive)  COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/72/bacb86faec759040a45f044739ed4e
+f1/56043a   NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT (N02_AM_Naive)  COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/f1/56043ae4f7c9f2f30e636c365e39d2
+ea/9ca6cc   NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT (N03_AM_Naive)  COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/ea/9ca6ccb8ff8296337f95792dc74380
+50/ecada6   NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT (R06_AM_Allo24h)    COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/50/ecada623996e43d1d842f5266a6547
+51/3cab4e   NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT (R05_AM_Allo24h)    COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/51/3cab4eb44b8e63a563053501f437f6
+fa/b98b9e   NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT (R08_AM_Allo24h)    COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/fa/b98b9eea35cde7ac6b7112c6773490
+57/8fc99c   NFCORE_RNASEQ:RNASEQ:QUANTIFY_STAR_SALMON:SALMON_QUANT (R07_AM_Allo24h) COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/57/8fc99c41b020e616eaad102f5b97ba
+b9/ec86d6   NFCORE_RNASEQ:RNASEQ:QUANTIFY_STAR_SALMON:SALMON_QUANT (N01_AM_Naive)   COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/b9/ec86d64896b1dc36f35ab5ffd9b558
+06/0fed5c   NFCORE_RNASEQ:RNASEQ:QUANTIFY_STAR_SALMON:SALMON_QUANT (N03_AM_Naive)   COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/06/0fed5c11b435ef09e2e1691dacd403
+6e/17b9b8   NFCORE_RNASEQ:RNASEQ:QUANTIFY_STAR_SALMON:SALMON_QUANT (N04_AM_Naive)   COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/6e/17b9b8f291a9ef7a4469dee5ed5c15
+b4/619e8f   NFCORE_RNASEQ:RNASEQ:QUANTIFY_STAR_SALMON:SALMON_QUANT (N02_AM_Naive)   COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/b4/619e8fafdf1618e723df8981533a24
+e7/d39252   NFCORE_RNASEQ:RNASEQ:QUANTIFY_STAR_SALMON:SALMON_QUANT (R08_AM_Allo24h) COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/e7/d392529534e631f64e6a7e6c4f0393
+14/0a5cda   NFCORE_RNASEQ:RNASEQ:QUANTIFY_STAR_SALMON:SALMON_QUANT (R06_AM_Allo24h) COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/14/0a5cda0d04f9ea96035e4017029dea
+7b/2d5e81   NFCORE_RNASEQ:RNASEQ:QUANTIFY_STAR_SALMON:SALMON_QUANT (R05_AM_Allo24h) COMPLETED   /scratch/lianov/nfcore_rnaseq/example_run/work/7b/2d5e8145284ca8694945526209b800</code></pre>
+<p>Choosing one specific directory from the above displays the expected
+files:</p>
+<pre><code>cd /scratch/lianov/nfcore_rnaseq/example_run/work/7b/2d5e8145284ca8694945526209b80
+ls -la</code></pre>
+<pre><code>drwxrwxr-x 3 lianov lianov  4096 Jul 24 19:24 ./
+drwxrwxr-x 3 lianov lianov  4096 Jul 24 19:20 ../
+-rw-rw-r-- 1 lianov lianov     0 Jul 24 19:21 .command.begin
+-rw-rw-r-- 1 lianov lianov  8377 Jul 24 19:24 .command.err
+-rw-rw-r-- 1 lianov lianov  8377 Jul 24 19:24 .command.log
+-rw-rw-r-- 1 lianov lianov     0 Jul 24 19:21 .command.out
+-rw-rw-r-- 1 lianov lianov 12132 Jul 24 19:20 .command.run
+-rw-rw-r-- 1 lianov lianov   729 Jul 24 19:20 .command.sh
+-rw-r--r-- 1 lianov lianov   279 Jul 24 19:24 .command.trace
+lrwxrwxrwx 1 lianov lianov   108 Jul 24 19:21 deseq2_pca_header.txt -&gt; /data/user/home/lianov/.nextflow/assets/nf-core/rnaseq/workflows/rnaseq/assets/multiqc/deseq2_pca_header.txt
+-rw-rw-r-- 1 lianov lianov     1 Jul 24 19:24 .exitcode
+lrwxrwxrwx 1 lianov lianov   117 Jul 24 19:21 gencode.vM32.annotation.filtered.gtf -&gt; /scratch/lianov/nfcore_rnaseq/example_run/work/6e/17d80ec88c525fb159bf5433623838/gencode.vM32.annotation.filtered.gtf
+lrwxrwxrwx 1 lianov lianov   102 Jul 24 19:21 genome.transcripts.fa -&gt; /scratch/lianov/nfcore_rnaseq/example_run/work/ca/7c9423cb2c9273e9ad65c051b1bab2/genome.transcripts.fa
+drwxr-xr-x 5 lianov lianov  4096 Jul 24 19:24 R05_AM_Allo24h/
+lrwxrwxrwx 1 lianov lianov   127 Jul 24 19:21 R05_AM_Allo24h.Aligned.toTranscriptome.out.bam -&gt; /scratch/lianov/nfcore_rnaseq/example_run/work/10/7419257d47c89a9a340dc08f6ff64c/R05_AM_Allo24h.Aligned.toTranscriptome.out.bam
+-rw-r--r-- 1 lianov lianov  1279 Jul 24 19:24 R05_AM_Allo24h_meta_info.json
+-rw-r--r-- 1 lianov lianov    77 Jul 24 19:24 versions.yml</code></pre>
+<p>Lastly, inspecting <code>.command.sh</code> verifies that indeed
+<code>--seqBias --gcBias</code> was applied to our run:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">cat</span> .command.sh</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co">#!/usr/bin/env bash -C -e -u -o pipefail</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="ex">salmon</span> quant <span class="dt">\</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>    <span class="at">--geneMap</span> gencode.vM32.annotation.filtered.gtf <span class="dt">\</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>    <span class="at">--threads</span> 6 <span class="dt">\</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>    <span class="at">--libType</span><span class="op">=</span>U <span class="dt">\</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>    <span class="at">-t</span> genome.transcripts.fa <span class="dt">\</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>    <span class="at">-a</span> R05_AM_Allo24h.Aligned.toTranscriptome.out.bam <span class="dt">\</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>    <span class="at">--seqBias</span> <span class="at">--gcBias</span> <span class="dt">\</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>    <span class="at">-o</span> R05_AM_Allo24h</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="ot">-f</span> R05_AM_Allo24h/aux_info/meta_info.json <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>    <span class="fu">cp</span> R05_AM_Allo24h/aux_info/meta_info.json <span class="st">&quot;R05_AM_Allo24h_meta_info.json&quot;</span></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="ot">-f</span> R05_AM_Allo24h/lib_format_counts.json <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>    <span class="fu">cp</span> R05_AM_Allo24h/lib_format_counts.json <span class="st">&quot;R05_AM_Allo24h_lib_format_counts.json&quot;</span></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&lt;&lt;-END_VERSIONS</span> <span class="op">&gt;</span> versions.yml</span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a><span class="st">&quot;NFCORE_RNASEQ:RNASEQ:QUANTIFY_STAR_SALMON:SALMON_QUANT&quot;:</span></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a><span class="st">    salmon: </span><span class="va">$(</span><span class="bu">echo</span> <span class="va">$(</span><span class="ex">salmon</span> <span class="at">--version</span><span class="va">)</span> <span class="kw">|</span> <span class="fu">sed</span> <span class="at">-e</span> <span class="st">&quot;s/salmon //g&quot;</span><span class="va">)</span></span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="op">END_VERSIONS</span></span></code></pre></div>
+</div>
+<div id="troubleshooting-errors" class="section level1">
+<h1>Troubleshooting errors</h1>
+<p>Our pipeline executed successfully. While it would be ideal if every
+run worked flawlessly, errors are sometimes inevitable. Fortunately,
+Seqera AI can assist in diagnosing and resolving these issues. Below, we
+present two example scenarios where we <strong>intentionally introduced
+errors</strong> to demonstrate how Seqera AI can help troubleshoot and
+guide the resolution process.</p>
+<div id="case-1" class="section level2">
+<h2>Case 1</h2>
+<p>In a new run, we have encountered the following error (this can be
+seen in <code>.nextflow.log</code>):</p>
+<pre><code>The following invalid input values have been detected:
+
+* --input (./samplesheet.csv): Validation of file failed:
+        -&gt; Entry 3: Missing required field(s): strandedness
+
+ -- Check script &#39;/home/lianov/.nextflow/assets/nf-core/rnaseq/./workflows/rnaseq/../../subworkflows/local/utils_nfcore_rnaseq_pipeline/../../nf-core/utils_nfschema_plugin/main.nf&#39; at line: 39 or see &#39;.nextflow.log&#39; file for more details</code></pre>
+<p>At at first glance this indicates that <code>strandedness</code> is
+missing from our samplesheet. Let’s take a look:</p>
+<pre><code>sample,fastq_1,fastq_2,strandedness
+N02_AM_Naive,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328049_SRR7457560.fastq.gz,,auto
+N01_AM_Naive,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328050_SRR7457559.fastq.gz,,auto
+N04_AM_Naive,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328051_SRR7457558.fastq.gz,,,auto
+N03_AM_Naive,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328052_SRR7457557.fastq.gz,,auto
+R08_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328047_SRR7457562.fastq.gz,,auto
+R07_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328048_SRR7457561.fastq.gz,,auto
+R06_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328057_SRR7457552.fastq.gz,,auto
+R05_AM_Allo24h,/data/project/U_BDS/Globus_endpoints/nf-core_workshop/input/fastqs/SRX4328058_SRR7457551.fastq.gz,,auto</code></pre>
+<p>As you can see every sample does have <code>auto</code> indicated, so
+what is the issue?</p>
+<blockquote>
+<p><strong>Discussion Question</strong></p>
+<p>Let’s spend a minutes looking over this file to see if you can spot
+the issue.</p>
+</blockquote>
+<p>Now let’s see if Seqera AI can help us as well:</p>
+<p><img src="imgs/seqera_ai_error_1.png" /></p>
+<p>By providing the error and the samplesheet, Seqera AI was able to
+spot the issue right away. It provided an explanation along with the
+corrected samplesheet.</p>
+</div>
+<div id="case-2" class="section level2">
+<h2>Case 2</h2>
+<p>Let’s try another example. In this new run, we are now receiving the
+following error:</p>
+<pre><code>-[nf-core/rnaseq] Pipeline completed with errors-
+ERROR ~ Error executing process &gt; &#39;NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT (N02_AM_Naive)&#39;
+
+Caused by:
+  Process `NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT (N02_AM_Naive)` terminated with an error exit status (1)
+
+
+Command executed:
+
+  salmon quant \
+      --geneMap gencode.vM32.annotation.filtered.gtf \
+      --threads 6 \
+      --libType=U \
+      --index salmon \
+      -r N02_AM_Naive_trimmed_trimmed.fq.gz \
+      --seqbias --gcbias \
+      -o N02_AM_Naive
+
+  if [ -f N02_AM_Naive/aux_info/meta_info.json ]; then
+      cp N02_AM_Naive/aux_info/meta_info.json &quot;N02_AM_Naive_meta_info.json&quot;
+  fi
+  if [ -f N02_AM_Naive/lib_format_counts.json ]; then
+      cp N02_AM_Naive/lib_format_counts.json &quot;N02_AM_Naive_lib_format_counts.json&quot;
+  fi
+
+  cat &lt;&lt;-END_VERSIONS &gt; versions.yml
+  &quot;NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT&quot;:
+      salmon: $(echo $(salmon --version) | sed -e &quot;s/salmon //g&quot;)
+  END_VERSIONS
+
+Command exit status:
+  1
+
+Command output:
+  (empty)
+
+Command error:
+  Version Server Response: Not Found
+  (mapping-based mode) Exception : [unrecognised option &#39;--seqbias&#39;].
+  Please be sure you are passing correct options, and that you are running in the intended mode.
+  alignment-based mode is detected and enabled via the &#39;-a&#39; flag. Exiting.
+
+Work dir:
+  /scratch/lianov/nfcore_rnaseq/example_of_error/work/e0/1bb787179e237e56d5bd2d1d38c07b
+
+Tip: view the complete command output by changing to the process work dir and entering the command `cat .command.out`</code></pre>
+<p>Let’s break this down first, identify the message that points to the
+error and then see if Seqera AI could have also helped us.</p>
+<ol style="list-style-type: decimal">
+<li>The error message block follows a standard format for errors which
+occurs within a specific process, in this case the process
+<code>NFCORE_RNASEQ:RNASEQ:QUANTIFY_PSEUDO_ALIGNMENT:SALMON_QUANT (N02_AM_Naive)</code></li>
+<li>We also see that it states exit status 1. This status is a common
+status indicating that the job was not successful (while exit status 0
+indicates success).</li>
+<li>It displays the command which the process executed - as we can see
+this is the <code>salmon quant</code> command which compiles the
+pipeline parameters along with any user-provided changes.</li>
+<li>Command error. The <code>salmon</code> developers created very
+user-friendly errors for this type of issue, where it clearly states
+that <code>--seqbias</code> is not an option.</li>
+</ol>
+<p>With <code>--seqbias</code> identified as the issue, what is the
+solution? One point to bear in mind is case-sensitivity.
+<code>--seqbias</code> failed because the proper parameter is
+<code>--seqBias</code> (note the capitalized <code>B</code>).</p>
+<hr />
+<p>Let’s see if Seqera AI could have helped us with this error as
+well:</p>
+<p><img src="imgs/seqera_ai_error_2_q.png" /></p>
+<p><img src="imgs/seqera_ai_error_2_a.png" /></p>
+<p>As expected it solved the issue and provided additional helpful
+information, including:</p>
+<ul>
+<li><svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M352 320c88.4 0 160-71.6 160-160c0-15.3-2.2-30.1-6.2-44.2c-3.1-10.8-16.4-13.2-24.3-5.3l-76.8 76.8c-3 3-7.1 4.7-11.3 4.7H336c-8.8 0-16-7.2-16-16V118.6c0-4.2 1.7-8.3 4.7-11.3l76.8-76.8c7.9-7.9 5.4-21.2-5.3-24.3C382.1 2.2 367.3 0 352 0C263.6 0 192 71.6 192 160c0 19.1 3.4 37.5 9.5 54.5L19.9 396.1C7.2 408.8 0 426.1 0 444.1C0 481.6 30.4 512 67.9 512c18 0 35.3-7.2 48-19.9L297.5 310.5c17 6.2 35.4 9.5 54.5 9.5zM80 408a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/></svg>
+Fixing the second parameter where we also introduced the same typo
+(<strong><code>--gcBias</code> instead of
+<code>--gcbias</code></strong>)</li>
+<li><svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M0 224c0 17.7 14.3 32 32 32s32-14.3 32-32c0-53 43-96 96-96H320v32c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l64-64c12.5-12.5 12.5-32.8 0-45.3l-64-64c-9.2-9.2-22.9-11.9-34.9-6.9S320 19.1 320 32V64H160C71.6 64 0 135.6 0 224zm512 64c0-17.7-14.3-32-32-32s-32 14.3-32 32c0 53-43 96-96 96H192V352c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9l-64 64c-12.5 12.5-12.5 32.8 0 45.3l64 64c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V448H352c88.4 0 160-71.6 160-160z"/></svg>
+Suggested the use of the flag <code>-resume</code> which enables
+Nextflow to start the new pipeline run where it failed (instead of from
+scratch)</li>
+<li><svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M297.2 248.9C311.6 228.3 320 203.2 320 176c0-70.7-57.3-128-128-128S64 105.3 64 176c0 27.2 8.4 52.3 22.8 72.9c3.7 5.3 8.1 11.3 12.8 17.7l0 0c12.9 17.7 28.3 38.9 39.8 59.8c10.4 19 15.7 38.8 18.3 57.5H109c-2.2-12-5.9-23.7-11.8-34.5c-9.9-18-22.2-34.9-34.5-51.8l0 0 0 0c-5.2-7.1-10.4-14.2-15.4-21.4C27.6 247.9 16 213.3 16 176C16 78.8 94.8 0 192 0s176 78.8 176 176c0 37.3-11.6 71.9-31.4 100.3c-5 7.2-10.2 14.3-15.4 21.4l0 0 0 0c-12.3 16.8-24.6 33.7-34.5 51.8c-5.9 10.8-9.6 22.5-11.8 34.5H226.4c2.6-18.7 7.9-38.6 18.3-57.5c11.5-20.9 26.9-42.1 39.8-59.8l0 0 0 0 0 0c4.7-6.4 9-12.4 12.7-17.7zM192 128c-26.5 0-48 21.5-48 48c0 8.8-7.2 16-16 16s-16-7.2-16-16c0-44.2 35.8-80 80-80c8.8 0 16 7.2 16 16s-7.2 16-16 16zm0 384c-44.2 0-80-35.8-80-80V416H272v16c0 44.2-35.8 80-80 80z"/></svg>
+Suggested to check for any custom configuration files since
+configurations in them could be overwriting parameters in the
+params.yml</li>
+</ul>
+<p>It did also suggest to remove these flags since they are not turned
+on by default. This suggestion is one where each user needs to consider
+it on a case by case basis. Pipeline developers typically set sensible
+defaults, but there are instances where enabling non-default parameters
+is best. <strong>Our recommendation to anyone using nf-core pipelines is
+to also become familiar with the underlying methods and tools</strong> -
+this will enable you to make the best decisions for your own data and
+use cases. After checking the documentation of a tool, if you have
+questions about specific parameters you can ask Seqera AI for help
+and/or the nf-core community in Slack for their input. There are also
+resources available online including the open-source repository for each
+tool (e.g.: search open/closed issues or discussions).</p>
+</div>
+</div>
+<div id="considerations-when-using-ai" class="section level1">
+<h1>Considerations when using AI</h1>
+<p>While Seqera AI is a powerful tool to help you in running nf-core
+pipelines and programming in Nextflow, there are some important
+limitations to keep in mind as you use Seqera AI (and other AI tools
+such as ChatGPT).</p>
+<p>Seqera AI is still susceptible to hallucinations. Hallucinations
+occur when an AI confidentially answers a prompt with either incorrect
+or entirely fabricated information. For example, we used the same
+prompts above and entered them into the Seqera AI extension for VSCode
+and received the following answers:</p>
+<p><img src="imgs/seqera_ai_hallucination.png" /></p>
+<p>Now as you can see the Seqera AI extension generated a response that
+is not entirely correct. While the last method it provided of creating a
+custom configuration profile is correct, the first two methods are
+entirely incorrect. The nf-core/rnaseq pipeline does not contain the
+<code>--star_align_threads</code> or <code>--star_align_memory</code>
+parameters, meaning these have been hallucinated.</p>
+<p>Another consideration when using AI tools is that responses are not
+reproducible. AI models generate responses based on probabilistic
+predictions, which means that the same question asked multiple times can
+yield different responses. This variability can make it difficult to
+consistently validate or rely on a solution given by AI. To demonstrate
+this, we entered one of the questions above into the Seqera AI web
+interface again and received this response:</p>
+<p><img src="imgs/seqera_ai_irreproducible.png" /></p>
+<p>As you can see, even though this is the exact prompt used above, the
+response is slightly different. Most notably, a description of
+<code>nextflow log</code> is absent from the response, which is a much
+easier and scalable method of obtaining information about a Nextflow
+run.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>Overall, Seqera AI is a powerful tool to use when working with
+Nextflow and nf-core, whether you are running a pre-built pipeline or
+developing your own. Because it is trained on a focused and
+domain-specific dataset, it often provides more relevant and accurate
+suggestions than generalized tools such as ChatGPT.</p>
+<p>However, much like other AI tools, it still suffers from
+hallucinations and can produce inconsistent or unreproducible responses.
+Therefore, we recommend always double-checking any response or command
+generated by Seqera AI (or any other AI, for that matter). You can
+cross-reference responses you receive with the official nf-core
+documentation and community resources such as the Slack workspace or
+GitHub discussions.</p>
+<p>Ultimately, Seqera AI should be seen as a helpful assistant. Use it
+to accelerate your work, but don’t let it be your sole source of
+information.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

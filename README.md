@@ -1,35 +1,48 @@
-# nf-core_workshop
+# Introduction to Bioinformatics Workflows with nf-core
 
-## Outline
+Recent advances in bioinformatics, computational biology, and the ever-growing scale of omics datasets have created an urgent need for efficient, reproducible, and scalable data processing that aligns with FAIR (Findable, Accessible, Interoperable, and Reusable) principles. nf-core addresses this need by providing a rich collection of community-curated, best-practice pipelines for secondary analysis across a wide range of omics domains. By leveraging nf-core, researchers can streamline complex analyses, ensure reproducibility, and focus more on biological insights rather than computational overhead.
 
-* Intro to Workflow Automation
-  * What are workflows?
-  * Why do we need workflows?
-    * (reproducibility/scalability/portability)
-* Intro to Nextflow and Nf-core
-  * What is Nextflow?
-  * What is nf-core?
-* Intro to rnaseq
-  * **Brief** description
-  * **Brief** description of dataset being used
-* Working with nf-core pipelines
-  * nf-core at UAB
-    * Intro to Cheaha
-    * Cheaha institutional config
-  * Testing nf-core pipelines (rnaseq)
-    * Create an sbatch script
-  * Creating the samplesheet
-    * Where to get the information about the samplesheet
-  * Adding Pipeline Parameter
-  * Custom Configuration
-  * Submitting the pipeline
-* Anatomy of a Nextflow/nf-core run
-  * Reviewing "biological" results
-    * Should be brief, describing what would be used in tertiary and how to use the reports
-  * Reviewing the nextflow reports
-  * Reviewing work dir
-  * How to use nextflow log
-* Where to go for help
-  * Intro to Seqera AI
-    * Maybe do some basic problems for how to solve issues
-  * Nf-core/Nextflow slack
+While this workshop will provide a brief introduction to Nextflow, and nf-core with a demostration of the `nf-core/rnaseq` pipeline, nf-core offers workflows/pipelines for 80+ use-cases, with many more under development. To learn more about nf-core, please visit: <https://nf-co.re/>
+
+------------------------------------------------------------------------
+
+# Scope of the workshop
+
+This workshop will cover introductory topics to help users get started with nf-core:
+
+-   Overview of Nextflow and nf-core
+-   `nf-core/rnaseq` pipeline
+    -   Overview of pipeline scope
+    -   nf-core at UAB with the Cheaha profile
+    -   Executing the pipeline
+    -   Interpreting the outputs
+    -   Reviewing Nextflow's working directories and logs
+-   Seqera AI
+
+# Authors and Instructors:
+
+-   Austyn Trull
+-   Lara Ianov, PhD
+
+## Additional credits
+
+Sections of the teaching material for this workshop, contains materials which have been adapted or modified from the following sources (we thank the curators and maintainers of all of these resources for their wonderful contributions, compiling the best practices, and easy to follow training guides for beginners):
+
+-   Beta phase of Nextflow carpentries material: <https://carpentries-incubator.github.io/workflows-nextflow/>
+
+We would also like to thank the following groups for support:
+
+-   UAB's Research Computing (HPC resources)
+-   Nextflow Ambassador program
+
+We would also like to thank the authors of the dataset which we implement in our workshop:
+
+-   Koch CM, Chiu SF, Akbarpour M, Bharat A, Ridge KM, Bartom ET, Winter DR. A Beginner's Guide to Analysis of RNA Sequencing Data. Am J Respir Cell Mol Biol. 2018 Aug;59(2):145-157. doi: 10.1165/rcmb.2017-0430TR. PMID: 29624415; PMCID: PMC6096346.
+
+Lastly, we would also like to thank Kristen Coutinho and the UAB Informatics Club for the dataset suggestion, and preliminary discussions for this workshop.
+
+# Citation
+
+If these materials are beneficial to your analysis and research, please cite it with the following DOI:
+
+> UAB Biological Data Science Core, Introduction to Bioinformatics Workflows with nf-core <!--  [![DOI]()]()  -->
