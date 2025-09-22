@@ -33,7 +33,7 @@ Sections of the teaching material for this workshop, contains materials which ha
 We would also like to thank the following groups for support:
 
 -   UAB's Research Computing (HPC resources)
--   Nextflow Ambassador program
+-   Nextflow Ambassador program: <https://www.nextflow.io/ambassadors.html>
 
 We would also like to thank the authors of the dataset which we implement in our workshop:
 
@@ -45,4 +45,8 @@ Lastly, we would also like to thank Kristen Coutinho and the UAB Informatics Clu
 
 If these materials are beneficial to your analysis and research, please cite it with the following DOI:
 
-> UAB Biological Data Science Core, Introduction to Bioinformatics Workflows with nf-core <!--  [![DOI]()]()  -->
+> UAB Biological Data Science Core, Introduction to Bioinformatics Workflows with nf-core.
+> 
+> Austyn Trull, Lara Ianov
+> 
+> [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17179741.svg)](https://doi.org/10.5281/zenodo.17179741)
